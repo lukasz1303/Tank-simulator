@@ -19,37 +19,44 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="allmodels.h" />
-    <ClInclude Include="constants.h" />
-    <ClInclude Include="cube.h" />
-    <ClInclude Include="lodepng.h" />
-    <ClInclude Include="model.h" />
-    <ClInclude Include="shaderprogram.h" />
-    <ClInclude Include="sphere.h" />
-    <ClInclude Include="teapot.h" />
-    <ClInclude Include="torus.h" />
+    <ClCompile Include="Sky.cpp" />
+    <ClCompile Include="source\Box.cpp" />
+    <ClCompile Include="source\Bullet.cpp" />
+    <ClCompile Include="source\Floor.cpp" />
+    <ClCompile Include="source\Lantern.cpp" />
+    <ClCompile Include="source\lodepng.cpp" />
+    <ClCompile Include="source\main_file.cpp" />
+    <ClCompile Include="source\ParticleSystem.cpp" />
+    <ClCompile Include="source\shaderprogram.cpp" />
+    <ClCompile Include="source\Tank.cpp" />
+    <ClCompile Include="source\Texture.cpp" />
+    <ClCompile Include="source\Tree.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="cube.cpp" />
-    <ClCompile Include="lodepng.cpp" />
-    <ClCompile Include="main_file.cpp" />
-    <ClCompile Include="model.cpp" />
-    <ClCompile Include="shaderprogram.cpp" />
-    <ClCompile Include="sphere.cpp" />
-    <ClCompile Include="teapot.cpp" />
-    <ClCompile Include="torus.cpp" />
+    <ClInclude Include="include\Box.h" />
+    <ClInclude Include="include\Bullet.h" />
+    <ClInclude Include="include\constants.h" />
+    <ClInclude Include="include\Floor.h" />
+    <ClInclude Include="include\Lantern.h" />
+    <ClInclude Include="include\lodepng.h" />
+    <ClInclude Include="include\ParticleSystem.h" />
+    <ClInclude Include="include\shaderprogram.h" />
+    <ClInclude Include="include\Tank.h" />
+    <ClInclude Include="include\Texture.h" />
+    <ClInclude Include="include\Tree.h" />
+    <ClInclude Include="Sky.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="f_colored.glsl" />
-    <None Include="f_constant.glsl" />
-    <None Include="f_lambert.glsl" />
-    <None Include="f_lamberttextured.glsl" />
-    <None Include="f_textured.glsl" />
-    <None Include="v_colored.glsl" />
-    <None Include="v_constant.glsl" />
-    <None Include="v_lambert.glsl" />
-    <None Include="v_lamberttextured.glsl" />
-    <None Include="v_textured.glsl" />
+    <None Include="shaders\f_floor.glsl" />
+    <None Include="shaders\f_lamp.glsl" />
+    <None Include="shaders\f_particle.glsl" />
+    <None Include="shaders\f_text.glsl" />
+    <None Include="shaders\f_tree.glsl" />
+    <None Include="shaders\v_floor.glsl" />
+    <None Include="shaders\v_lamp.glsl" />
+    <None Include="shaders\v_particle.glsl" />
+    <None Include="shaders\v_text.glsl" />
+    <None Include="shaders\v_tree.glsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

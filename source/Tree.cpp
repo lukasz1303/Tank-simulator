@@ -21,7 +21,6 @@ void Tree::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp,  GLuint tex, GLuint
 	float color[] = { 1,1,0,1 };
 	glVertexAttribPointer(sp->a("color"), 4, GL_FLOAT, false, 0, color);
 
-
 	M_tree = glm::translate(M_tree, glm::vec3(coordinates));
 	M_tree = glm::scale(M_tree, glm::vec3(scale, scale, scale));
 
@@ -32,8 +31,6 @@ void Tree::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp,  GLuint tex, GLuint
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M_tree));
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
 	glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
-
-
 
 	glm::mat4 PVM = P * V * M_tree;
 	glm::mat4 VM = V * M_tree;
@@ -47,34 +44,20 @@ void Tree::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp,  GLuint tex, GLuint
 
 	glEnableVertexAttribArray(sp->a("vertex"));
 	glEnableVertexAttribArray(sp->a("normal"));
+	glEnableVertexAttribArray(sp->a("aTexCoord"));
+
 	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, &vertices[0]);
 	glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, &normals[0]);
-
-	glEnableVertexAttribArray(sp->a("aTexCoord"));
 	glVertexAttribPointer(sp->a("aTexCoord"), 2, GL_FLOAT, false, 0, &uvs[0]);
 
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	for (int i = 0; i < numberOfTextures; i++) {
-		std::cout << "i = " << vertices.size() << std::endl;
-		std::cout << "startVertices[i] = " << startVertices[i] << std::endl;
-		std::cout << "startVertices[i+1]-startVertices[i] = " << startVertices[i+1] - startVertices[i] << std::endl;
 		glBindTexture(GL_TEXTURE_2D, texes[i]);
 		glUniform1i(sp->u("ourTexture1"), 0);
-
 		glDrawArrays(GL_TRIANGLES, startVertices[i], startVertices[i+1]-startVertices[i]);
 	}
-
-	//glBindTexture(GL_TEXTURE_2D, tex);
-	//glUniform1i(sp->u("ourTexture1"), 0);
-
-	//glDrawArrays(GL_TRIANGLES, 0, 36444);
-
-	//glBindTexture(GL_TEXTURE_2D, tex2);
-	//glUniform1i(sp->u("ourTexture1"), 0);
-
-	//glDrawArrays(GL_TRIANGLES, 36444, vertices.size()-36440);
 
 	glDisableVertexAttribArray(sp->a("vertex"));
 	glDisableVertexAttribArray(sp->a("normal"));

@@ -11,6 +11,28 @@ class ParticleSystem
 {
 
 private:
+	float verts[24] = {
+	  1.0f,-1.0f,0.0f,1.0f, //A
+	 -1.0f, 1.0f,0.0f,1.0f, //B
+	 -1.0f,-1.0f,0.0f,1.0f, //C
+
+	  1.0f,-1.0f,0.0f,1.0f, //A
+	  1.0f, 1.0f,0.0f,1.0f, //D
+	 -1.0f, 1.0f,0.0f,1.0f, //B
+	};
+
+	//Tablica wspólrzednych teksturowania
+	float texCoords[12] = {
+	  1.0f, 0.0f,   //A
+	  0.0f, 1.0f,    //B
+	  0.0f, 0.0f,    //C
+
+	  1.0f, 0.0f,    //A
+	  1.0f, 1.0f,    //D
+	  0.0f, 1.0f,    //B
+	};
+
+
 	float v[8000];
 	float colors_particles[8000];
 	
@@ -38,6 +60,6 @@ public:
 	int count = 0;
 	void initializeSystem(int n);
 	void processSystem(int n, float timestep);
-	void drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::mat4 M_lufa);
+	void drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::mat4 M_lufa, GLuint tex);
 	
 };

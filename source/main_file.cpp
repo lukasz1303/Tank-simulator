@@ -53,6 +53,7 @@ Texture tree_texture2 = Texture();
 Texture bullet_texture = Texture();
 Texture wheel_texture = Texture();
 Texture tank_texture = Texture();
+Texture fire_texture = Texture();
 Texture skybox[6] = { Texture(), Texture(), Texture(), Texture(), Texture(), Texture() };
 Floor ground = Floor();
 Sky sky = Sky();
@@ -101,88 +102,10 @@ ShaderProgram* spg;
 ShaderProgram* spl;
 ShaderProgram* sptree;
 
-
-bool loadOBJ(const char* path, std::vector < glm::vec4 >& out_vertices, std::vector < glm::vec2 >& out_uvs, std::vector < glm::vec4 >& out_normals)
-{
-	std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
-	std::vector< glm::vec4 > temp_vertices;
-	std::vector< glm::vec2 > temp_uvs;
-	std::vector< glm::vec4 > temp_normals;
-
-	out_vertices.clear();
-	out_uvs.clear();
-	out_normals.clear();
-
-#pragma warning (disable : 4996)
-	FILE* file = fopen(path, "r");
-	if (file == NULL) {
-		printf("Impossible to open the file !\n");
-		return false;
-	}
-	int n = 0;
-	while (1) {
-		char lineHeader[128];
-		//pierwsze slowo linii
-		int res = fscanf(file, "%s", lineHeader);
-		if (res == EOF)
-			break;
-		if (strcmp(lineHeader, "v") == 0) {
-			glm::vec4 vertex;
-			fscanf(file, "%f %f %f\n", &vertex.x, &vertex.y, &vertex.z);
-			vertex.a = 1.0f;
-			temp_vertices.push_back(vertex);
-		}
-		else if (strcmp(lineHeader, "vt") == 0) {
-			glm::vec2 uv;
-			fscanf(file, "%f %f\n", &uv.x, &uv.y);
-			temp_uvs.push_back(uv);
-		}
-		else if (strcmp(lineHeader, "vn") == 0) {
-			glm::vec4 normal;
-			fscanf(file, "%f %f %f\n", &normal.x, &normal.y, &normal.z);
-			normal.a = 0.0f;
-			temp_normals.push_back(normal);
-		}
-		else if (strcmp(lineHeader, "f") == 0) {
-			std::string vertex1, vertex2, vertex3;
-			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
-			int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
-			if (matches != 9) {
-				printf("File can't be read by our simple parser : ( Try exporting with other options\n");
-				return false;
-			}
-			vertexIndices.push_back(vertexIndex[0]);
-			vertexIndices.push_back(vertexIndex[1]);
-			vertexIndices.push_back(vertexIndex[2]);
-			uvIndices.push_back(uvIndex[0]);
-			uvIndices.push_back(uvIndex[1]);
-			uvIndices.push_back(uvIndex[2]);
-			normalIndices.push_back(normalIndex[0]);
-			normalIndices.push_back(normalIndex[1]);
-			normalIndices.push_back(normalIndex[2]);
-			n += 3;
-		}
-	}
-
-	for (unsigned int i = 0; i < vertexIndices.size(); i++) {
-		unsigned int vertexIndex = vertexIndices[i];
-		glm::vec4 vertex = temp_vertices[vertexIndex - 1];
-		out_vertices.push_back(vertex);
-
-		unsigned int uvsIndex = uvIndices[i];
-		glm::vec2 uvs = temp_uvs[uvsIndex - 1];
-		out_uvs.push_back(uvs);
-
-		unsigned int normalIndex = normalIndices[i];
-		glm::vec4 normal = temp_normals[normalIndex - 1];
-		out_normals.push_back(normal);
-	}
-	return true;
-}
-
-
+void readAllTextures();
+void loadAllObjects();
+void loadShaders();
 void freeOpenGLProgram(GLFWwindow* window);
-
 
 //Procedura obsługi myszki
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
@@ -215,7 +138,6 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void key_callback(GLFWwindow* window, int key,
 	int scancode, int action, int mods) {
 	const float cameraSpeed = 0.001f;
-
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		w_press = true;
@@ -262,127 +184,10 @@ void initOpenGLProgram(GLFWwindow* window) {
 
 	glfwSetKeyCallback(window, key_callback);
 
-	bool res = loadOBJ("objects/bullet.obj", vertices, uvs, normals);
-	printf("Loaded bullet.obj %d\n", res);
-	bullet.setObject(vertices, uvs, normals);
-
-	res = loadOBJ("objects/box.obj", vertices, uvs, normals);
-	printf("Loaded box.obj %d\n", res);
-	box.setObject(vertices, uvs, normals);
-
-	res = loadOBJ("objects/lampa_bottom.obj", vertices, uvs, normals);
-	printf("Loaded lampa_bottom.obj %d\n", res);
-	lantern.setBottomObject(vertices, uvs, normals);
-	lantern2.setBottomObject(vertices, uvs, normals);
-
-	res = loadOBJ("objects/lamp.obj", vertices, uvs, normals);
-	printf("Loaded lamp.obj %d\n", res);
-
-	lantern.setLampObject(vertices, uvs, normals);
-	lantern2.setLampObject(vertices, uvs, normals);
-
-	res = loadOBJ("objects/bottom.obj", vertices, uvs, normals);
-	printf("Loaded bottom.obj %d\n", res);
-	tank.setObjectBottom(vertices, uvs, normals);
-
-	res = loadOBJ("objects/turret.obj", vertices, uvs, normals);
-	printf("Loaded turret.obj %d\n", res);
-	tank.setObjectTurret(vertices, uvs, normals);
-
-	res = loadOBJ("objects/lufa.obj", vertices, uvs, normals);
-	printf("Loaded lufa.obj %d\n", res);
-	tank.setObjectBarrel(vertices, uvs, normals);
-
-	res = loadOBJ("objects/wheel.obj", vertices, uvs, normals);
-	printf("Loaded wheel.obj %d\n", res);
-	tank.setObjectWheel(vertices, uvs, normals);
-
-
-	tree_texture.readTexture((char*)"textures/tree.png");
-	printf("Loaded tree.png\n");
-	tree_texture2.readTexture((char*)"textures/leaf.png");
-	printf("Loaded leaf.png\n");
-
-	loader.loadOBJ2("objects/tree2.obj", vertices, uvs, normals, numberOfTextures, startVertices, texes);
-	printf("Loaded tree.obj %d\n", res);
-	texes.clear();
-	texes.push_back(tree_texture.tex);
-	texes.push_back(tree_texture2.tex);
-
-	tree.setObject(vertices, uvs, normals,numberOfTextures, startVertices, texes);
-	tree2.setObject(vertices, uvs, normals, numberOfTextures, startVertices, texes);
-
-	glm::vec3 cords[25];
-	int n = 0;
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			float x = (float)(rand() % 20 - 50 + i * 20);
-			float z = (float)(rand() % 20 - 50 + j * 20);
-			if (x < 10 && z <10 && z >-10 && x > -10) {
-				x = 25.0f;
-				z = 25.0f;
-			}
-			cords[n] = glm::vec3(x, 0.0f,z );
-			n += 1;
-		}
-	}
-
-	for (int i = 0; i <25; i++) {
-
-		trees[i] = new Tree();
-		trees[i]->setObject(vertices, uvs, normals, numberOfTextures, startVertices, texes);
-		trees[i]->setCords(cords[i]);
-		trees[i]->setScale((float)(rand() % 200 + 100) / 100.0f);
-
-	}
-
-	tree.setCords(glm::vec3(2.0f, 0.0f, -20.0f));
-	tree2.setCords(glm::vec3(-17.0f, 0.0f, 10.0f));
-
-	box.setCords(glm::vec3(4.0f, 0.0f, -4.0f));
-
-	lantern.setCords(glm::vec3(-4.0f, 0.0f, -4.0f));
-	lantern2.setCords(glm::vec3(-12.0f, 0.0f, -12.0f));
-
-	spt = new ShaderProgram("shaders/v_text.glsl", NULL, "shaders/f_text.glsl");
-	spp = new ShaderProgram("shaders/v_particle.glsl", NULL, "shaders/f_particle.glsl");
-	spg = new ShaderProgram("shaders/v_floor.glsl", NULL, "shaders/f_floor.glsl");
-	spl = new ShaderProgram("shaders/v_lamp.glsl", NULL, "shaders/f_lamp.glsl");
-	sptree = new ShaderProgram("shaders/v_tree.glsl", NULL, "shaders/f_tree.glsl");
-
-	floor_texture.readTexture((char*)"textures/ground.png");
-	printf("Loaded ground.png\n");
-	lamp_bottom_texture.readTexture((char*)"textures/lantern_botom.png");
-	printf("Loaded lantern_botom.png\n");
-	lamp_white_texture.readTexture((char*)"textures/lamp.png");
-	printf("Loaded lamp.png\n");
-	box_texture.readTexture((char*)"textures/light_wood.png");
-	printf("Loaded light_wood.png\n");
-	
-	bullet_texture.readTexture((char*)"textures/bullet.png");
-	printf("Loaded bullet.png\n");
-	wheel_texture.readTexture((char*)"textures/wheel.png");
-	printf("Loaded wheel.png\n");
-	tank_texture.readTexture((char*)"textures/tank.png");
-	printf("Loaded tank.png\n");
+	readAllTextures();
+	loadAllObjects();
+	loadShaders();
 	particleSystem.initializeSystem(2000);
-	printf("Loaded particleSystem\n");
-
-	char carray [6][128] =
-	{
-			"textures/front.png",
-			"textures/back.png",
-			"textures/right.png",
-			"textures/left.png",
-			"textures/bottom.png",	
-			"textures/top.png",
-	};
-
-	for (int i = 0; i < 6; i++) {
-		std::cout << carray[i] << std::endl;
-	skybox[i].readTexture((char*)carray[i]);
-	}
-
 }
 
 
@@ -393,6 +198,7 @@ void freeOpenGLProgram(GLFWwindow* window) {
 	glDeleteTextures(1, &lamp_white_texture.tex);
 	glDeleteTextures(1, &box_texture.tex);
 	glDeleteTextures(1, &tree_texture.tex);
+	glDeleteTextures(1, &tree_texture2.tex);
 	glDeleteTextures(1, &bullet_texture.tex);
 	glDeleteTextures(1, &wheel_texture.tex);
 	glDeleteTextures(1, &tank_texture.tex);
@@ -447,7 +253,7 @@ void drawScene(GLFWwindow* window) {
 
 	if (shoot_ball == true)
 	{
-		particleSystem.drawParticles(P, V, spp, tank.getM_lufa());
+		particleSystem.drawParticles(P, V, spp, tank.getM_lufa(),fire_texture.tex);
 		bullet.generate(P, V, tank.getM_lufa(),  spt, bullet_texture.tex, particleSystem);
 	}
 
@@ -517,4 +323,137 @@ int main(void)
 	glfwDestroyWindow(window);
 	glfwTerminate();
 	exit(EXIT_SUCCESS);
+}
+
+void readAllTextures() {
+	floor_texture.readTexture((char*)"textures/ground.png");
+	printf("Loaded ground.png\n");
+
+	lamp_bottom_texture.readTexture((char*)"textures/lantern_botom.png");
+	printf("Loaded lantern_botom.png\n");
+
+	lamp_white_texture.readTexture((char*)"textures/lamp.png");
+	printf("Loaded lamp.png\n");
+
+	box_texture.readTexture((char*)"textures/light_wood.png");
+	printf("Loaded light_wood.png\n");
+
+	tree_texture.readTexture((char*)"textures/tree.png");
+	printf("Loaded tree.png\n");
+
+	tree_texture2.readTexture((char*)"textures/leaf.png");
+	printf("Loaded leaf.png\n");
+
+	bullet_texture.readTexture((char*)"textures/bullet.png");
+	printf("Loaded bullet.png\n");
+
+	wheel_texture.readTexture((char*)"textures/wheel.png");
+	printf("Loaded wheel.png\n");
+
+	tank_texture.readTexture((char*)"textures/tank.png");
+	printf("Loaded tank.png\n");
+
+	fire_texture.readTexture((char*)"textures/fire.png");
+	printf("Loaded fire.png\n");
+
+	char carray[6][128] =
+	{
+			"textures/front.png",
+			"textures/back.png",
+			"textures/right.png",
+			"textures/left.png",
+			"textures/bottom.png",
+			"textures/top.png",
+	};
+
+	for (int i = 0; i < 6; i++) {
+		std::cout << carray[i] << std::endl;
+		skybox[i].readTexture((char*)carray[i]);
+	}
+}
+
+void loadAllObjects() {
+	bool res = loader.loadOBJ("objects/bullet.obj", vertices, uvs, normals);
+	printf("Loaded bullet.obj %d\n", res);
+	bullet.setObject(vertices, uvs, normals);
+
+	res = loader.loadOBJ("objects/box.obj", vertices, uvs, normals);
+	printf("Loaded box.obj %d\n", res);
+	box.setObject(vertices, uvs, normals);
+
+	res = loader.loadOBJ("objects/lampa_bottom.obj", vertices, uvs, normals);
+	printf("Loaded lampa_bottom.obj %d\n", res);
+	lantern.setBottomObject(vertices, uvs, normals);
+	lantern2.setBottomObject(vertices, uvs, normals);
+
+	res = loader.loadOBJ("objects/lamp.obj", vertices, uvs, normals);
+	printf("Loaded lamp.obj %d\n", res);
+
+	lantern.setLampObject(vertices, uvs, normals);
+	lantern2.setLampObject(vertices, uvs, normals);
+
+	res = loader.loadOBJ("objects/bottom.obj", vertices, uvs, normals);
+	printf("Loaded bottom.obj %d\n", res);
+	tank.setObjectBottom(vertices, uvs, normals);
+
+	res = loader.loadOBJ("objects/turret.obj", vertices, uvs, normals);
+	printf("Loaded turret.obj %d\n", res);
+	tank.setObjectTurret(vertices, uvs, normals);
+
+	res = loader.loadOBJ("objects/lufa.obj", vertices, uvs, normals);
+	printf("Loaded lufa.obj %d\n", res);
+	tank.setObjectBarrel(vertices, uvs, normals);
+
+	res = loader.loadOBJ("objects/wheel.obj", vertices, uvs, normals);
+	printf("Loaded wheel.obj %d\n", res);
+	tank.setObjectWheel(vertices, uvs, normals);
+
+	res = loader.loadOBJ("objects/tree2.obj", vertices, uvs, normals, numberOfTextures, startVertices);
+	printf("Loaded tree.obj %d\n",res);
+	texes.clear();
+	texes.push_back(tree_texture.tex);
+	texes.push_back(tree_texture2.tex);
+
+	tree.setObject(vertices, uvs, normals, numberOfTextures, startVertices, texes);
+	tree2.setObject(vertices, uvs, normals, numberOfTextures, startVertices, texes);
+
+	glm::vec3 cords[25];
+	int n = 0;
+	for (int i = 0; i < 5; i++) {
+		for (int j = 0; j < 5; j++) {
+			float x = (float)(rand() % 20 - 50 + i * 20);
+			float z = (float)(rand() % 20 - 50 + j * 20);
+			if (x < 10 && z <10 && z >-10 && x > -10) {
+				x = 25.0f;
+				z = 25.0f;
+			}
+			cords[n] = glm::vec3(x, 0.0f, z);
+			n += 1;
+		}
+	}
+
+	for (int i = 0; i < 25; i++) {
+
+		trees[i] = new Tree();
+		trees[i]->setObject(vertices, uvs, normals, numberOfTextures, startVertices, texes);
+		trees[i]->setCords(cords[i]);
+		trees[i]->setScale((float)(rand() % 200 + 100) / 100.0f);
+
+	}
+
+	tree.setCords(glm::vec3(2.0f, 0.0f, -20.0f));
+	tree2.setCords(glm::vec3(-17.0f, 0.0f, 10.0f));
+
+	box.setCords(glm::vec3(4.0f, 0.0f, -4.0f));
+
+	lantern.setCords(glm::vec3(-4.0f, 0.0f, -4.0f));
+	lantern2.setCords(glm::vec3(-12.0f, 0.0f, -12.0f));
+}
+
+void loadShaders() {
+	spt = new ShaderProgram("shaders/v_text.glsl", NULL, "shaders/f_text.glsl");
+	spp = new ShaderProgram("shaders/v_particle_text.glsl", NULL, "shaders/f_particle_text.glsl");
+	spg = new ShaderProgram("shaders/v_floor.glsl", NULL, "shaders/f_floor.glsl");
+	spl = new ShaderProgram("shaders/v_lamp.glsl", NULL, "shaders/f_lamp.glsl");
+	sptree = new ShaderProgram("shaders/v_tree.glsl", NULL, "shaders/f_tree.glsl");
 }

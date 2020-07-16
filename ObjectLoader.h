@@ -21,8 +21,10 @@ class ObjectLoader
 {
 public:
 	ObjectLoader();
+	
+	bool loadOBJ(const char* path, std::vector < glm::vec4 >& out_vertices, std::vector < glm::vec2 >& out_uvs, std::vector < glm::vec4 >& out_normals);
+	bool loadOBJ(const char* path, std::vector < glm::vec4 >& out_vertices, std::vector < glm::vec2 >& out_uvs, std::vector < glm::vec4 >& out_normals, int& numberOfTextures, std::vector<int>& startVertices);
 
-	bool loadOBJ2(const char* path, std::vector < glm::vec4 >& out_vertices, std::vector < glm::vec2 >& out_uvs, std::vector < glm::vec4 >& out_normals, int& numberOfTextures, std::vector<int>& startVertices, std::vector<GLuint>& texes);
 
 };
 

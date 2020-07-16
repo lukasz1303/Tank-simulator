@@ -127,5 +127,11 @@
     <None Include="shaders\v_tree.glsl">
       <Filter>Pliki zasobów</Filter>
     </None>
+    <None Include="shaders\f_particle_text.glsl">
+      <Filter>Pliki zasobów</Filter>
+    </None>
+    <None Include="shaders\v_particle_text.glsl">
+      <Filter>Pliki zasobów</Filter>
+    </None>
   </ItemGroup>
 </Project>

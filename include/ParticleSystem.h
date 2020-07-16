@@ -5,6 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
 
 class ParticleSystem
@@ -49,7 +50,7 @@ private:
 
 	Particle system[2000]; //Tablica cz¹stek
 
-	glm::vec3 gravity = glm::vec3(0.95f, 0.95f, 0.95f); //Wektor grawitacji
+	glm::vec3 gravity = glm::vec3(0.98f, 0.98f, 0.98f); //Wektor grawitacji
 
 	float rand_gen();
 	float normalRandom();
@@ -60,6 +61,6 @@ public:
 	int count = 0;
 	void initializeSystem(int n);
 	void processSystem(int n, float timestep);
-	void drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::mat4 M_lufa, GLuint tex);
+	void drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::mat4 M_lufa, GLuint tex1, GLuint tex2, GLuint tex3, GLuint tex4, GLuint tex5, GLuint tex6, GLuint tex7, GLuint tex8);
 	
 };

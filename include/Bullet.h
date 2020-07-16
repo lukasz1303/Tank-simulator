@@ -23,7 +23,7 @@ private:
 	bool collision = false;
 
 	//dlugosc jaka przebedzie kula
-	int shoot_length = 100;
+	int shoot_length = 500;
 
 	//rozmiar kuli
 	glm::vec3 bullet_size = glm::vec3(0.3f, 0.3f, 0.3f);

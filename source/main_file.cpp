@@ -53,7 +53,15 @@ Texture tree_texture2 = Texture();
 Texture bullet_texture = Texture();
 Texture wheel_texture = Texture();
 Texture tank_texture = Texture();
-Texture fire_texture = Texture();
+Texture smog_texture1 = Texture();
+Texture smog_texture2 = Texture();
+Texture smog_texture3 = Texture();
+Texture smog_texture4 = Texture();
+Texture smog_texture5 = Texture();
+Texture smog_texture6 = Texture();
+Texture smog_texture7 = Texture();
+Texture smog_texture8 = Texture();
+
 Texture skybox[6] = { Texture(), Texture(), Texture(), Texture(), Texture(), Texture() };
 Floor ground = Floor();
 Sky sky = Sky();
@@ -178,6 +186,7 @@ void initOpenGLProgram(GLFWwindow* window) {
 
 	glClearColor(0.3, 0.8, 1, 1);
 	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	glfwSetCursorPosCallback(window, mouse_callback);
@@ -253,7 +262,7 @@ void drawScene(GLFWwindow* window) {
 
 	if (shoot_ball == true)
 	{
-		particleSystem.drawParticles(P, V, spp, tank.getM_lufa(),fire_texture.tex);
+		particleSystem.drawParticles(P, V, spp, tank.getM_lufa(),smog_texture1.tex, smog_texture2.tex, smog_texture3.tex, smog_texture4.tex, smog_texture5.tex, smog_texture6.tex, smog_texture7.tex, smog_texture8.tex);
 		bullet.generate(P, V, tank.getM_lufa(),  spt, bullet_texture.tex, particleSystem);
 	}
 
@@ -353,9 +362,22 @@ void readAllTextures() {
 	tank_texture.readTexture((char*)"textures/tank.png");
 	printf("Loaded tank.png\n");
 
-	fire_texture.readTexture((char*)"textures/fire.png");
-	printf("Loaded fire.png\n");
-
+	smog_texture1.readTexture((char*)"textures/smog1.png");
+	printf("Loaded smog1.png\n");
+	smog_texture2.readTexture((char*)"textures/smog2.png");
+	printf("Loaded smog2.png\n");
+	smog_texture3.readTexture((char*)"textures/smog3.png");
+	printf("Loaded smog3.png\n");
+	smog_texture4.readTexture((char*)"textures/smog4.png");
+	printf("Loaded smog4.png\n");
+	smog_texture5.readTexture((char*)"textures/smog5.png");
+	printf("Loaded smog5.png\n");
+	smog_texture6.readTexture((char*)"textures/smog6.png");
+	printf("Loaded smog6.png\n");
+	smog_texture7.readTexture((char*)"textures/smog7.png");
+	printf("Loaded smog7.png\n");
+	smog_texture8.readTexture((char*)"textures/smog8.png");
+	printf("Loaded smog8.png\n");
 	char carray[6][128] =
 	{
 			"textures/front.png",

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ObjectLoader.cpp" />
     <ClCompile Include="Sky.cpp" />
     <ClCompile Include="source\Box.cpp" />
     <ClCompile Include="source\Bullet.cpp" />
@@ -44,6 +45,7 @@
     <ClInclude Include="include\Tank.h" />
     <ClInclude Include="include\Texture.h" />
     <ClInclude Include="include\Tree.h" />
+    <ClInclude Include="ObjectLoader.h" />
     <ClInclude Include="Sky.h" />
   </ItemGroup>
   <ItemGroup>

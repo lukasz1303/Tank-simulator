@@ -1,10 +1,13 @@
 #include "include/Tree.h"
 
-void Tree::setObject(std::vector < glm::vec4 > out_vertices, std::vector < glm::vec2 > out_uvs, std::vector < glm::vec4 > out_normals)
+void Tree::setObject(std::vector < glm::vec4 > out_vertices, std::vector < glm::vec2 > out_uvs, std::vector < glm::vec4 > out_normals, int numberOfTextures, std::vector<int> startVertices, std::vector<GLuint> texes)
 {
 	vertices = out_vertices;
 	uvs = out_uvs;
 	normals = out_normals;
+	this->numberOfTextures = numberOfTextures;
+	this->startVertices = startVertices;
+	this->texes = texes;
 }
 
 void Tree::setCords(glm::vec3 coords)
@@ -53,15 +56,25 @@ void Tree::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp,  GLuint tex, GLuint
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glBindTexture(GL_TEXTURE_2D, tex);
-	glUniform1i(sp->u("ourTexture1"), 0);
+	for (int i = 0; i < numberOfTextures; i++) {
+		std::cout << "i = " << vertices.size() << std::endl;
+		std::cout << "startVertices[i] = " << startVertices[i] << std::endl;
+		std::cout << "startVertices[i+1]-startVertices[i] = " << startVertices[i+1] - startVertices[i] << std::endl;
+		glBindTexture(GL_TEXTURE_2D, texes[i]);
+		glUniform1i(sp->u("ourTexture1"), 0);
 
-	glDrawArrays(GL_TRIANGLES, 0, 36444);
+		glDrawArrays(GL_TRIANGLES, startVertices[i], startVertices[i+1]-startVertices[i]);
+	}
 
-	glBindTexture(GL_TEXTURE_2D, tex2);
-	glUniform1i(sp->u("ourTexture1"), 0);
+	//glBindTexture(GL_TEXTURE_2D, tex);
+	//glUniform1i(sp->u("ourTexture1"), 0);
 
-	glDrawArrays(GL_TRIANGLES, 36444, vertices.size()-36440);
+	//glDrawArrays(GL_TRIANGLES, 0, 36444);
+
+	//glBindTexture(GL_TEXTURE_2D, tex2);
+	//glUniform1i(sp->u("ourTexture1"), 0);
+
+	//glDrawArrays(GL_TRIANGLES, 36444, vertices.size()-36440);
 
 	glDisableVertexAttribArray(sp->a("vertex"));
 	glDisableVertexAttribArray(sp->a("normal"));

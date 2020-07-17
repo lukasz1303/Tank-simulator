@@ -58,7 +58,7 @@ void ParticleSystem::processSystem(int n, float timestep)
 
 }
 
-void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::mat4 M_lufa, glm::vec3 cameraPos,float pitch, float angle, GLuint tex1, GLuint tex2, GLuint tex3, GLuint tex4, GLuint tex5, GLuint tex6, GLuint tex7, GLuint tex8)
+void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::mat4 M_lufa, glm::vec3 cameraPos,float pitch, float angle, GLuint tex)
 {
 	processSystem(400, 0.1f);
 	sp->use();
@@ -103,7 +103,6 @@ void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, 
 		}
 		
 		glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(system[i].M));
-		
 		glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, verts);
 
 		coordX = 1 - (round(system[i].ttl * 7) / 12 - floor(round(system[i].ttl * 7) / 12)) - 1.0f / 12.0f;
@@ -119,16 +118,17 @@ void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, 
 		  coordX,					coordY + 1.0f / 7.0f,		//B
 		};
 
-
-		
 		glVertexAttribPointer(sp->a("aTexCoord"), 2, GL_FLOAT, false, 0, texCoords);
 		glActiveTexture(GL_TEXTURE0);
 		
-		glBindTexture(GL_TEXTURE_2D, tex1);
+		glBindTexture(GL_TEXTURE_2D, tex);
 		glUniform1i(sp->u("ourTexture1"), 0);
 
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
+
+	glDisableVertexAttribArray(sp->a("vertex"));
+	glDisableVertexAttribArray(sp->a("aTexCoord"));
 
 }
 

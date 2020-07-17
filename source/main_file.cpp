@@ -53,14 +53,7 @@ Texture tree_texture2 = Texture();
 Texture bullet_texture = Texture();
 Texture wheel_texture = Texture();
 Texture tank_texture = Texture();
-Texture smog_texture1 = Texture();
-Texture smog_texture2 = Texture();
-Texture smog_texture3 = Texture();
-Texture smog_texture4 = Texture();
-Texture smog_texture5 = Texture();
-Texture smog_texture6 = Texture();
-Texture smog_texture7 = Texture();
-Texture smog_texture8 = Texture();
+Texture smog_texture = Texture();
 
 Texture skybox[6] = { Texture(), Texture(), Texture(), Texture(), Texture(), Texture() };
 Floor ground = Floor();
@@ -281,7 +274,7 @@ void drawScene(GLFWwindow* window) {
 	if (shoot_ball == true)
 	{
 		bullet.generate(P, V, tank.getM_lufa(), spt, bullet_texture.tex, particleSystem);
-		particleSystem.drawParticles(P, V, spp, tank.getM_lufa(), cameraPos, pitch, angle, smog_texture1.tex, smog_texture2.tex, smog_texture3.tex, smog_texture4.tex, smog_texture5.tex, smog_texture6.tex, smog_texture7.tex, smog_texture8.tex);	
+		particleSystem.drawParticles(P, V, spp, tank.getM_lufa(), cameraPos, pitch, angle, smog_texture.tex);	
 	}
 
 	glfwSwapBuffers(window);
@@ -364,22 +357,9 @@ void readAllTextures() {
 	tank_texture.readTexture((char*)"textures/tank.png");
 	printf("Loaded tank.png\n");
 
-	smog_texture1.readTexture((char*)"textures/smog.png");
+	smog_texture.readTexture((char*)"textures/smog.png");
 	printf("Loaded smog.png\n");
-	smog_texture2.readTexture((char*)"textures/smog2.png");
-	printf("Loaded smog2.png\n");
-	smog_texture3.readTexture((char*)"textures/smog3.png");
-	printf("Loaded smog3.png\n");
-	smog_texture4.readTexture((char*)"textures/smog4.png");
-	printf("Loaded smog4.png\n");
-	smog_texture5.readTexture((char*)"textures/smog5.png");
-	printf("Loaded smog5.png\n");
-	smog_texture6.readTexture((char*)"textures/smog6.png");
-	printf("Loaded smog6.png\n");
-	smog_texture7.readTexture((char*)"textures/smog7.png");
-	printf("Loaded smog7.png\n");
-	smog_texture8.readTexture((char*)"textures/smog8.png");
-	printf("Loaded smog8.png\n");
+
 	char carray[6][128] =
 	{
 			"textures/front.png",

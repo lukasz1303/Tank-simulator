@@ -241,6 +241,7 @@ void drawScene(GLFWwindow* window) {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glm::mat4 V = glm::lookAt(cameraPos, cameraFront, cameraUp);
+	std::cout << "x " << cameraPos.x << ", y " << cameraPos.y << ", z " << cameraPos.z << std::endl;
 	glm::mat4 P = glm::perspective(glm::radians(85.0f), 1.8f, 1.0f, 100.0f);
 
 	sky.draw_sky(P, V, skybox, spl, speed_vector);
@@ -258,20 +259,15 @@ void drawScene(GLFWwindow* window) {
 	for (int i = 0; i < 25; i++) {
 		trees[i]->draw(P, V, sptree, tree_texture.tex, tree_texture2.tex);
 	}
+	ground.draw_floor(P, V, floor_texture.tex, spg);
 
 
-	if (shoot_ball == true)
-	{
-		particleSystem.drawParticles(P, V, spp, tank.getM_lufa(),smog_texture1.tex, smog_texture2.tex, smog_texture3.tex, smog_texture4.tex, smog_texture5.tex, smog_texture6.tex, smog_texture7.tex, smog_texture8.tex);
-		bullet.generate(P, V, tank.getM_lufa(),  spt, bullet_texture.tex, particleSystem);
-	}
 
 	shoot_ball = bullet.shooting(shoot_ball);
 
 	lantern.draw(P, V, spt,spl, lamp_bottom_texture.tex,lamp_white_texture.tex);
 	lantern2.draw(P, V, spt,spl, lamp_bottom_texture.tex, lamp_white_texture.tex);
 
-	ground.draw_floor(P, V, floor_texture.tex, spg);
 
 	if (!bullet.hasCollision(box.getPosition(), box.getSize(), box.is_destroyed()))
 	{
@@ -280,6 +276,12 @@ void drawScene(GLFWwindow* window) {
 	else if (box.is_destroyed() == false)
 	{
 		box.destroy();
+	}
+
+	if (shoot_ball == true)
+	{
+		particleSystem.drawParticles(P, V, spp, tank.getM_lufa(), cameraPos, pitch, angle, smog_texture1.tex, smog_texture2.tex, smog_texture3.tex, smog_texture4.tex, smog_texture5.tex, smog_texture6.tex, smog_texture7.tex, smog_texture8.tex);
+		bullet.generate(P, V, tank.getM_lufa(), spt, bullet_texture.tex, particleSystem);
 	}
 
 	glfwSwapBuffers(window);

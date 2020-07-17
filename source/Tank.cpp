@@ -89,9 +89,8 @@ void Tank::move(glm::mat4 P, glm::vec3 speed_vector, float wheel_speed_left, flo
 	
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
-	M_wieza = glm::translate(M, glm::vec3(0.0f, 0.0f, 0.0f));
+	M_wieza = glm::translate(M, glm::vec3(0.2f, 1.02f, 0.0f));
 
-	M_wieza = glm::translate(M_wieza, glm::vec3(0.0f, 1.0f, 0.0f));
 	M_wieza = glm::rotate(M_wieza, glm::radians(90.0f - angle), glm::vec3(0.0f, 1.0f, 0.0f));
 	M_wieza = glm::rotate(M_wieza, glm::radians(pitch), glm::vec3(0.0f, 1.0f, 0.0f));
 

@@ -18,7 +18,7 @@ bool Bullet::shooting(bool shoot_ball)
 	}
 	else
 	{
-		shoot = glm::vec3(1.0f, 0.0f, 0.0f);
+		shoot = glm::vec3(0.29f, 0.0f, 2.0f);
 		collision = false;
 		counter = 0;
 		first_frame_shot = true;
@@ -30,7 +30,7 @@ void Bullet::generate(glm::mat4 P, glm::mat4 V, glm::mat4 M_lufa, ShaderProgram 
 {
 		if (first_frame_shot == true) {
 			M_copy = M_lufa;
-			system.initializeSystem(2000);
+			system.initializeSystem(400);
 			first_frame_shot = false;
 			
 		}

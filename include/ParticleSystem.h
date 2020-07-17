@@ -38,6 +38,7 @@ private:
 	float colors_particles[8000];
 	
 	glm::mat4 M_lufa_copy = glm::mat4(1.0f);
+	float pitch_copy = 0;;
 
 	bool first_frame = true;
 	struct Particle {

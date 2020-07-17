@@ -89,12 +89,12 @@ bool s_press = false;
 bool a_press = false;
 bool d_press = false;
 
-glm::vec3 cameraPos = glm::vec3(0.0f, 2.6f, 6.0f);
+glm::vec3 cameraPos = glm::vec3(0.0f, 2.8f, 5.5f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 glm::vec4 tank_position = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
 glm::vec3 speed_vector = glm::vec3(0.0f, 0.0f, 0.0f);
-glm::vec3 camera_transform = glm::vec3(0.0f, 2.6f, 6.0f);
+glm::vec3 camera_transform = glm::vec3(0.0f, 2.8f, 5.5f);
 
 std::vector< glm::vec4 > vertices;
 std::vector< glm::vec2 > uvs;
@@ -138,7 +138,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	glm::vec3 direction;
 	direction.x = camera_transform[0] * cos(glm::radians(xoffset)) + camera_transform[2] * sin(glm::radians(xoffset));
 	direction.z = -camera_transform[0] * sin(glm::radians(xoffset)) + camera_transform[2] * cos(glm::radians(xoffset));
-	direction.y = 2.6f;
+	direction.y = 2.8f;
 	camera_transform = direction;
 }
 
@@ -196,7 +196,7 @@ void initOpenGLProgram(GLFWwindow* window) {
 	readAllTextures();
 	loadAllObjects();
 	loadShaders();
-	particleSystem.initializeSystem(2000);
+	particleSystem.initializeSystem(400);
 }
 
 
@@ -280,8 +280,8 @@ void drawScene(GLFWwindow* window) {
 
 	if (shoot_ball == true)
 	{
-		particleSystem.drawParticles(P, V, spp, tank.getM_lufa(), cameraPos, pitch, angle, smog_texture1.tex, smog_texture2.tex, smog_texture3.tex, smog_texture4.tex, smog_texture5.tex, smog_texture6.tex, smog_texture7.tex, smog_texture8.tex);
 		bullet.generate(P, V, tank.getM_lufa(), spt, bullet_texture.tex, particleSystem);
+		particleSystem.drawParticles(P, V, spp, tank.getM_lufa(), cameraPos, pitch, angle, smog_texture1.tex, smog_texture2.tex, smog_texture3.tex, smog_texture4.tex, smog_texture5.tex, smog_texture6.tex, smog_texture7.tex, smog_texture8.tex);	
 	}
 
 	glfwSwapBuffers(window);

@@ -13,10 +13,10 @@ float ParticleSystem::normalRandom() {
 void ParticleSystem::createParticle(Particle& p) 
 {
 	p.position = glm::vec3(0.0f, 0.0f, 0.0f);
-	p.speed = glm::vec3(normalRandom() * 0.18f +0.05f , normalRandom() * 0.18f + 0, normalRandom() * 0.18+0.05f);
+	p.speed = glm::vec3(glm::clamp(normalRandom() * 0.18f +0.05f,-0.45f,0.5f) , glm::clamp(normalRandom() * 0.18f + 0.0f, -0.45f, 0.45f), glm::clamp(normalRandom() * 0.18f + 0.05f, -0.45f, 0.5f));
 	p.color = glm::vec4(glm::clamp((normalRandom() * 0.5f + 1), 0.2f, 1.0f), glm::clamp((normalRandom() * 0.4f + 0.3f), 0.0f, 0.5f), 0.0f, 1.0f);
 	p.dst = 0;
-	p.ttl = glm::clamp(normalRandom() * 4 + 10, 0.0f, 12.0f);
+	p.ttl = glm::clamp(normalRandom() * 4 + 9, 0.0f, 12.0f);
 }
 
 void ParticleSystem::initializeSystem( int n) 
@@ -60,30 +60,28 @@ void ParticleSystem::processSystem(int n, float timestep)
 
 void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::mat4 M_lufa, glm::vec3 cameraPos,float pitch, float angle, GLuint tex1, GLuint tex2, GLuint tex3, GLuint tex4, GLuint tex5, GLuint tex6, GLuint tex7, GLuint tex8)
 {
-	processSystem(2000, 0.1f);
+	processSystem(400, 0.1f);
 	sp->use();
 	if (first_frame) {
 		M_lufa_copy = M_lufa;
+		pitch_copy = pitch;
 		first_frame = false;
 	}
 
-	int numberOfParticles = 200;
+	int numberOfParticles = 399;
 
 	for (int i = 0; i <= numberOfParticles; i++) {
 		
 		glm::mat4 M_Particle = M_lufa_copy;
 		
-
 		M_Particle = glm::translate(M_Particle, system[i].position);
-		M_Particle = glm::translate(M_Particle, glm::vec3(0.0f, -0.02f, 2.5f));
+		M_Particle = glm::translate(M_Particle, glm::vec3(0.0f, -0.02f, 2.7f));
 		glm::vec3 p = M_Particle * glm::vec4(glm::vec3(0.0f), 1.0f);
-		M_Particle = glm::rotate(M_Particle, glm::radians(90.0f - angle), glm::vec3(1.0f, 0.0f, 0.0f));
-		M_Particle = glm::rotate(M_Particle, glm::radians(pitch), glm::vec3(1.0f, 0.0f, 0.0f));
+		M_Particle = glm::rotate(M_Particle, glm::radians(pitch-pitch_copy), glm::vec3(1.0f, 0.0f, 0.0f));
 		M_Particle = glm::scale(M_Particle, glm::vec3(0.5f, 0.5f, 0.5));
 		system[i].M = M_Particle;
 
 		system[i].dst = sqrt((p.x - cameraPos.x) * (p.x - cameraPos.x) + (p.y - cameraPos.y) * (p.y - cameraPos.y) + (p.z - cameraPos.z) * (p.z - cameraPos.z));
-
 	}
 
 	quicksort(system, 0, numberOfParticles);
@@ -91,35 +89,39 @@ void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, 
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
 	glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
 
+	glEnableVertexAttribArray(sp->a("vertex"));
+	glEnableVertexAttribArray(sp->a("aTexCoord"));
+
+	float coordX;
+	float coordY;
+
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	for (int i = numberOfParticles; i >=0; i--) {
 		if (system[i].ttl <= 0) {
 			continue;
 		}
 		
 		glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(system[i].M));
-		glEnableVertexAttribArray(sp->a("vertex"));
+		
 		glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, verts);
 
-		float coordX = 1 - (round(system[i].ttl * 7) / 12 - floor(round(system[i].ttl * 7) / 12)) - 1.0f / 12.0f;
-		float coordY = 1-floor(round(system[i].ttl * 7) / 12) / 7 - 1.0f / 12.0f-0.0715;
-		//printf("ttl = %f, coordx = %f, coordY = %f\n", system[i].ttl, coordX, coordY);
-		float texCoords[12] = {
-		  coordX + 1.0f / 12.0f,	coordY,    //A
-		  coordX,					coordY + 1.0f / 7.0f,    //B
-		  coordX,					coordY,    //C
+		coordX = 1 - (round(system[i].ttl * 7) / 12 - floor(round(system[i].ttl * 7) / 12)) - 1.0f / 12.0f;
+		coordY = 1-floor(round(system[i].ttl * 7) / 12) / 7 - 1.0f / 12.0f - 1.0f/14.0f;
 
-		  coordX + 1.0f / 12.0f,	coordY,    //A
-		  coordX + 1.0f / 12.0f,	coordY + 1.0f / 7.0f,    //D
-		  coordX,					coordY + 1.0f / 7.0f,    //B
+		float texCoords[12] = {
+		  coordX + 1.0f / 12.0f,	coordY,						//A
+		  coordX,					coordY + 1.0f / 7.0f,		//B
+		  coordX,					coordY,						//C
+
+		  coordX + 1.0f / 12.0f,	coordY,						//A
+		  coordX + 1.0f / 12.0f,	coordY + 1.0f / 7.0f,		//D
+		  coordX,					coordY + 1.0f / 7.0f,		//B
 		};
 
 
-		glEnableVertexAttribArray(sp->a("aTexCoord"));
+		
 		glVertexAttribPointer(sp->a("aTexCoord"), 2, GL_FLOAT, false, 0, texCoords);
-
 		glActiveTexture(GL_TEXTURE0);
 		
 		glBindTexture(GL_TEXTURE_2D, tex1);
@@ -128,8 +130,6 @@ void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, 
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
 
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//glDrawArrays(GL_POINTS, 0, count);
 }
 
 int ParticleSystem::partition(Particle arr[], int low, int high) // dzielimy tablice na dwie czesci, w pierwszej wszystkie liczby sa mniejsze badz rowne x, w drugiej wieksze lub rowne od x

@@ -22,7 +22,7 @@ private:
 	glm::mat4 M_lufa = glm::mat4(1.0f);
 
 	//wspolrzedne poczatkowe lufy
-	glm::vec3 lufa_cords = glm::vec3(1.0f, 0.2f, 0.0f);
+	glm::vec3 lufa_cords = glm::vec3(0.65f, 0.4f, 0.0f);
 
 	//rozmiar czolgu
 	glm::vec3 tank_size = glm::vec3(1.6f, 0.6f, 1.4f);

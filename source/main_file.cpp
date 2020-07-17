@@ -241,7 +241,7 @@ void drawScene(GLFWwindow* window) {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glm::mat4 V = glm::lookAt(cameraPos, cameraFront, cameraUp);
-	std::cout << "x " << cameraPos.x << ", y " << cameraPos.y << ", z " << cameraPos.z << std::endl;
+	//std::cout << "x " << cameraPos.x << ", y " << cameraPos.y << ", z " << cameraPos.z << std::endl;
 	glm::mat4 P = glm::perspective(glm::radians(85.0f), 1.8f, 1.0f, 100.0f);
 
 	sky.draw_sky(P, V, skybox, spl, speed_vector);
@@ -364,8 +364,8 @@ void readAllTextures() {
 	tank_texture.readTexture((char*)"textures/tank.png");
 	printf("Loaded tank.png\n");
 
-	smog_texture1.readTexture((char*)"textures/smog1.png");
-	printf("Loaded smog1.png\n");
+	smog_texture1.readTexture((char*)"textures/smog.png");
+	printf("Loaded smog.png\n");
 	smog_texture2.readTexture((char*)"textures/smog2.png");
 	printf("Loaded smog2.png\n");
 	smog_texture3.readTexture((char*)"textures/smog3.png");

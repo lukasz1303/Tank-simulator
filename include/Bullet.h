@@ -23,7 +23,7 @@ private:
 	bool collision = false;
 
 	//dlugosc jaka przebedzie kula
-	int shoot_length = 90;
+	int shoot_length = 120;
 
 	//rozmiar kuli
 	glm::vec3 bullet_size = glm::vec3(0.3f, 0.3f, 0.3f);
@@ -32,7 +32,7 @@ private:
 	glm::vec3 shoot = glm::vec3(0.0f, 0.0f, -1.0f);
 
 	//zmiana wektora predkosci kuli
-	glm::vec3  bullet_vector = glm::vec3(-0.03f, 0.0F, 0.5f);
+	glm::vec3  bullet_vector = glm::vec3(-0.03f, 0.0F, 0.8f);
 
 	//macierze obiektu
 	glm::vec4 Position = glm::vec4(glm::vec3(0.0f), 1.0f);

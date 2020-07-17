@@ -52,7 +52,7 @@ private:
 
 	Particle system[2000]; //Tablica cz¹stek
 
-	glm::vec3 gravity = glm::vec3(0.95f, 0.95f, 0.95f); //Wektor grawitacji
+	glm::vec3 gravity = glm::vec3(0.9f, 0.9f, 0.9f); //Wektor grawitacji
 
 	float rand_gen();
 	float normalRandom();

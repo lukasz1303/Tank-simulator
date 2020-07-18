@@ -26,13 +26,13 @@ bool Bullet::shooting(bool shoot_ball)
 	}
 }
 
-void Bullet::generate(glm::mat4 P, glm::mat4 V, glm::mat4 M_lufa, ShaderProgram *sp, GLuint tex, ParticleSystem &system)
+void Bullet::generate(glm::mat4 P, glm::mat4 V, glm::mat4 M_lufa, ShaderProgram *sp, GLuint tex, ParticleSystem &system, irrklang::ISoundEngine *SoundEngine)
 {
 		if (first_frame_shot == true) {
 			M_copy = M_lufa;
 			system.initializeSystem(400);
 			first_frame_shot = false;
-			
+			SoundEngine->play2D("tank_fire_shot.mp3", false);
 		}
 		
 		Mp1 = glm::translate(M_copy, glm::vec3(shoot[0] - 0.2f, shoot[1], shoot[2]));

@@ -22,6 +22,8 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include <istream>
 #include <string>
 #include <iostream>
+#include <irrKlang-1.6.0/include/irrKlang.h>
+
 
 #include "include/Tree.h"
 #include "include/Bullet.h"
@@ -61,6 +63,8 @@ Sky sky = Sky();
 ParticleSystem particleSystem = ParticleSystem();
 ObjectLoader loader = ObjectLoader();
 
+irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
+
 
 float angle = 90.0f;
 bool shoot_ball = false;
@@ -81,6 +85,9 @@ bool w_press = false;
 bool s_press = false;
 bool a_press = false;
 bool d_press = false;
+bool space_press = false;
+
+bool shot_audio = false;
 
 glm::vec3 cameraPos = glm::vec3(0.0f, 2.8f, 5.5f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -157,7 +164,10 @@ void key_callback(GLFWwindow* window, int key,
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_RELEASE)
 		d_press = false;
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-		shoot_ball = true;
+		space_press = true;
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_RELEASE)
+		space_press = false;
+
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 	{
 		freeOpenGLProgram(window);
@@ -190,6 +200,8 @@ void initOpenGLProgram(GLFWwindow* window) {
 	loadAllObjects();
 	loadShaders();
 	particleSystem.initializeSystem(400);
+
+	
 }
 
 
@@ -208,15 +220,17 @@ void freeOpenGLProgram(GLFWwindow* window) {
 
 //Procedura rysująca zawartość sceny
 void drawScene(GLFWwindow* window) {
+
+	glm::vec3 speed = glm::vec3(0.0f);
 	if (w_press) {
-		speed_vector.z -= movingSpeed * sin(angle * PI / 180);
-		speed_vector.x += movingSpeed * cos(angle * PI / 180);
+		speed = glm::vec3(-movingSpeed * cos(angle * PI / 180), 0.0f, movingSpeed * sin(angle * PI / 180));
+		speed_vector -= speed;
 		wheel_speed_left += movingSpeed;
 		wheel_speed_right += movingSpeed;
 	}
 	if (s_press) {
-		speed_vector.z += movingSpeed * sin(angle * PI / 180);
-		speed_vector.x -= movingSpeed * cos(angle * PI / 180);
+		speed = glm::vec3(movingSpeed * cos(angle * PI / 180), 0.0f, -movingSpeed * sin(angle * PI / 180));
+		speed_vector -= speed;
 		wheel_speed_left -= movingSpeed;
 		wheel_speed_right -= movingSpeed;
 	}
@@ -229,6 +243,9 @@ void drawScene(GLFWwindow* window) {
 		angle -= rotateSpeed;
 		wheel_speed_right -= movingSpeed * 0.5f;
 		wheel_speed_left += movingSpeed * 0.5f;
+	}
+	if (space_press) {
+		shoot_ball = true;
 	}
 	tank_position = tank.getPosition();
 
@@ -255,7 +272,6 @@ void drawScene(GLFWwindow* window) {
 	ground.draw_floor(P, V, floor_texture.tex, spg);
 
 
-
 	shoot_ball = bullet.shooting(shoot_ball);
 
 	lantern.draw(P, V, spt,spl, lamp_bottom_texture.tex,lamp_white_texture.tex);
@@ -273,8 +289,8 @@ void drawScene(GLFWwindow* window) {
 
 	if (shoot_ball == true)
 	{
-		bullet.generate(P, V, tank.getM_lufa(), spt, bullet_texture.tex, particleSystem);
-		particleSystem.drawParticles(P, V, spp, tank.getM_lufa(), cameraPos, pitch, angle, smog_texture.tex);	
+		bullet.generate(P, V, tank.getM_lufa(), spt, bullet_texture.tex, particleSystem, SoundEngine);
+		particleSystem.drawParticles(P, V, spp, tank.getM_lufa(), cameraPos, pitch, speed,smog_texture.tex);
 	}
 
 	glfwSwapBuffers(window);

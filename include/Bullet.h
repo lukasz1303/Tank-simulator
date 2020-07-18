@@ -8,6 +8,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <stdlib.h>
 #include <stdio.h>
+#include <irrKlang-1.6.0/include/irrKlang.h>
 #include "constants.h"
 #include "lodepng.h"
 #include "shaderprogram.h"
@@ -39,7 +40,7 @@ private:
 	glm::mat4 Mp1 = glm::mat4(1.0f);
 	glm::mat4 M_copy = glm::mat4(1.0f);
 
-	//wektory obiektu
+	//wektory obiektu 
 	std::vector< glm::vec4 > vertices;
 	std::vector< glm::vec2 > uvs;
 	std::vector< glm::vec4 > normals;
@@ -49,7 +50,7 @@ private:
 
 public:
 	void setObject(std::vector < glm::vec4 > out_vertices, std::vector < glm::vec2 > out_uvs, std::vector < glm::vec4 > out_normals);
-	void generate(glm::mat4 P, glm::mat4 V, glm::mat4 M_lufa, ShaderProgram *sp, GLuint tex, ParticleSystem &system);
+	void generate(glm::mat4 P, glm::mat4 V, glm::mat4 M_lufa, ShaderProgram *sp, GLuint tex, ParticleSystem &system, irrklang::ISoundEngine *SoundEngine );
 	bool shooting(bool shoot_ball);
 	bool hasCollision(glm::vec3 object_position, glm::vec3 object_size, bool destroyed);
 };

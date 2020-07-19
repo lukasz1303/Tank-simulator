@@ -14,7 +14,7 @@ void ParticleSystem::createParticle(Particle& p)
 {
 	p.position = glm::vec3(0.0f, 0.0f, 0.0f);
 	//p.speed = glm::vec3(0.0f, 0.0f, 0.0f);
-	p.speed = glm::vec3(glm::clamp(normalRandom() * 0.18f + 0.05f, -0.45f, 0.5f), glm::clamp(normalRandom() * 0.18f + 0.0f, -0.45f, 0.45f), glm::clamp(normalRandom() * 0.18f + 0.05f, -0.45f, 0.5f));
+	p.speed = glm::vec3(glm::clamp(normalRandom() * 0.18f + 0.15f, -0.42f, 0.58f), glm::clamp(normalRandom() * 0.18f + 0.0f, -0.45f, 0.45f), glm::clamp(normalRandom() * 0.18f + 0.05f, -0.45f, 0.5f));
 
 	p.color = glm::vec4(glm::clamp((normalRandom() * 0.5f + 1), 0.2f, 1.0f), glm::clamp((normalRandom() * 0.4f + 0.3f), 0.0f, 0.5f), 0.0f, 1.0f);
 	p.dst = 0;
@@ -54,14 +54,13 @@ void ParticleSystem::processSystem(int n, float timestep)
 
 void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::mat4 M_lufa, glm::vec3 cameraPos,float pitch, float angle, glm::vec3 speed_vector, GLuint tex)
 {
-	processSystem(100, 0.1f);
+	processSystem(70, 0.1f);
 	sp->use();
 
-	int numberOfParticles = 99; //n-1
+	int numberOfParticles = 69; //n-1
 	if (first_frame) {
 		M_lufa_copy = M_lufa;
 		pitch_copy = pitch;
-		angle_copy = angle;
 		first_frame = false;
 
 		for (int i = 0; i <= numberOfParticles; i++) {
@@ -69,8 +68,6 @@ void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, 
 			system[i].speed.z += 8.0f * speed_vector.z * sin(angle * 3.141f / 180.0f);		//z==z
 		}
 	}
-
-
 
 	for (int i = 0; i <= numberOfParticles; i++) {
 		

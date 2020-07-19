@@ -33,14 +33,29 @@ private:
 	  0.0f, 1.0f,    //B
 	};
 
+	float colors[24] = {
+	1.0f,0.0f,0.0f,1.0f,
+	1.0f,0.0f,0.0f,1.0f,
+	1.0f,0.0f,0.0f,1.0f,
+
+	1.0f,0.0f,0.0f,1.0f,
+	1.0f,0.0f,0.0f,1.0f,
+	1.0f,0.0f,0.0f,1.0f };
+
+
+	float v[8000];
+	float colors_particles[8000];
 	
 	glm::mat4 M_lufa_copy = glm::mat4(1.0f);
 	float pitch_copy = 0;
+	float angle_copy = 0;
+	glm::vec3 speed_vector_copy;
 
 	bool first_frame = true;
 	struct Particle {
 		glm::vec3 position; //Po³o¿enie cz¹stki
 		glm::vec3 speed; //Prêdkoœæ cz¹stki
+		glm::vec4 color;
 		float dst;
 		float ttl; //Czas ¿ycia
 		glm::mat4 M;
@@ -60,7 +75,7 @@ public:
 	int count = 0;
 	void initializeSystem(int n);
 	void processSystem(int n, float timestep);
-	void drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::mat4 M_lufa, glm::vec3 cameraPos, float pitch, glm::vec3 speed_vector,GLuint tex);
+	void drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::mat4 M_lufa, glm::vec3 cameraPos, float pitch,float angle, glm::vec3 speed_vector,GLuint tex);
 	int partition(Particle arr[], int low, int high);
 	void quicksort(Particle arr[], int low, int high);
 };

@@ -36,6 +36,8 @@ public:
 		0.0f, 0.0f,-1.0f,0.0f,
 	};
 
+
+
 	//Tablica wspólrzednych teksturowania
 	float texCoords[12] = {
 	  200.0f, 0.0f,   //A

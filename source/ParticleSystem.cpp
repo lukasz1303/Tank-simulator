@@ -12,9 +12,11 @@ float ParticleSystem::normalRandom() {
 
 void ParticleSystem::createParticle(Particle& p) 
 {
-	p.position = glm::vec3(0.0f);
-	p.speed = glm::vec3(glm::clamp(normalRandom() * 0.18f +0.05f,-0.45f,0.5f) , glm::clamp(normalRandom() * 0.18f + 0.0f, -0.45f, 0.45f), glm::clamp(normalRandom() * 0.2f + 0.05f, -0.45f, 0.55f));
-	//p.color = glm::vec4(glm::clamp((normalRandom() * 0.5f + 1), 0.2f, 1.0f), glm::clamp((normalRandom() * 0.4f + 0.3f), 0.0f, 0.5f), 0.0f, 1.0f);
+	p.position = glm::vec3(0.0f, 0.0f, 0.0f);
+	//p.speed = glm::vec3(0.0f, 0.0f, 0.0f);
+	p.speed = glm::vec3(glm::clamp(normalRandom() * 0.18f + 0.05f, -0.45f, 0.5f), glm::clamp(normalRandom() * 0.18f + 0.0f, -0.45f, 0.45f), glm::clamp(normalRandom() * 0.18f + 0.05f, -0.45f, 0.5f));
+
+	p.color = glm::vec4(glm::clamp((normalRandom() * 0.5f + 1), 0.2f, 1.0f), glm::clamp((normalRandom() * 0.4f + 0.3f), 0.0f, 0.5f), 0.0f, 1.0f);
 	p.dst = 0;
 	p.ttl = glm::clamp(normalRandom() * 4 + 9, 0.0f, 12.0f);
 }
@@ -34,11 +36,15 @@ void ParticleSystem::processSystem(int n, float timestep)
 		for (int i = 0; i < n; i++)
 		{
 			system[i].position += system[i].speed * timestep;
+			system[i].color.r = glm::clamp(system[i].color.r, 0.5f - system[i].ttl / 30.0f, 0.5f + system[i].ttl / 30.0f);
+			system[i].color.g = glm::clamp(system[i].color.g, 0.5f - system[i].ttl / 30.0f, 0.5f + system[i].ttl / 30.0f);
+			system[i].color.b = glm::clamp(system[i].color.b, 0.5f - system[i].ttl / 30.0f, 0.5f + system[i].ttl / 30.0f);
 			system[i].speed *= gravity;
 			
-			system[i].ttl -= timestep*1.5;
+			system[i].ttl -= timestep*2.4f;
 
 			if (system[i].ttl > 0) {
+
 				count += 1;
 			}
 		}
@@ -46,56 +52,59 @@ void ParticleSystem::processSystem(int n, float timestep)
 
 }
 
-void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::mat4 M_lufa, glm::vec3 cameraPos,float pitch, glm::vec3 speed_vector, GLuint tex)
+void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::mat4 M_lufa, glm::vec3 cameraPos,float pitch, float angle, glm::vec3 speed_vector, GLuint tex)
 {
-	processSystem(400, 0.1f);
+	processSystem(100, 0.1f);
 	sp->use();
 
-	int numberOfParticles = 399; //n-1
+	int numberOfParticles = 99; //n-1
 	if (first_frame) {
 		M_lufa_copy = M_lufa;
 		pitch_copy = pitch;
+		angle_copy = angle;
 		first_frame = false;
 
-		glm::mat4 rotationMat(1);
-		rotationMat = glm::rotate(rotationMat, glm::radians(pitch), glm::vec3(0.0, 1.0, 0.0));
-		speed_vector = glm::vec3(rotationMat * glm::vec4(speed_vector, 1.0));
 		for (int i = 0; i <= numberOfParticles; i++) {
-			system[i].speed.y += 8.0f * speed_vector.x;			//y==x
-			system[i].speed.z += 8.0f * speed_vector.z;			//z==z
+			system[i].speed.y += 8.0f * speed_vector.x * cos(angle * 3.141f / 180.0f);		//y==x
+			system[i].speed.z += 8.0f * speed_vector.z * sin(angle * 3.141f / 180.0f);		//z==z
 		}
 	}
+
+
 
 	for (int i = 0; i <= numberOfParticles; i++) {
 		
 		glm::mat4 M_Particle = M_lufa_copy;
-		//system[i].position.x += speed_vector_copy.x*0.1f;
-
-		M_Particle = glm::translate(M_Particle, system[i].position);
 		M_Particle = glm::translate(M_Particle, glm::vec3(0.0f, -0.02f, 2.7f));
+		M_Particle = glm::rotate(M_Particle, glm::radians(-pitch_copy), glm::vec3(1.0f, 0.0f, 0.0f));
+		M_Particle = glm::translate(M_Particle, system[i].position);
 
-		M_Particle = glm::rotate(M_Particle, glm::radians(pitch-pitch_copy), glm::vec3(1.0f, 0.0f, 0.0f));
-		M_Particle = glm::scale(M_Particle, glm::vec3(0.5f, 0.5f, 0.5));
-		glm::vec3 p = M_Particle * glm::vec4(glm::vec3(0.0f), 1.0f);
+		M_Particle = glm::scale(M_Particle, glm::vec3(0.8f, 0.8f, 0.8f));
+		glm::vec4 p = M_Particle * glm::vec4(glm::vec3(0.0f), 1.0f);
+
+		float delta_x = p.x - cameraPos.x;
+		float delta_z = p.z - cameraPos.z;
+		float theta_radians = -atan2(delta_z, delta_x);
+
+		M_Particle = glm::rotate(M_Particle, glm::radians(theta_radians * 180.0f / 3.141f - 270.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		system[i].M = M_Particle;
-
-		system[i].dst = sqrt((p.x - cameraPos.x) * (p.x - cameraPos.x) + (p.y - cameraPos.y) * (p.y - cameraPos.y) + (p.z - cameraPos.z) * (p.z - cameraPos.z));
-
-
+		p = M_Particle * glm::vec4(glm::vec3(0.0f), 1.0f);
+		system[i].dst = (cameraPos.x - p.x) * (cameraPos.x - p.x) + (cameraPos.x - p.x) * (cameraPos.x - p.x) + (cameraPos.z - p.z) * (cameraPos.z - p.z);	
 	}
 
 	quicksort(system, 0, numberOfParticles);
-
 
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
 	glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
 	glEnableVertexAttribArray(sp->a("aTexCoord"));
+	glEnableVertexAttribArray(sp->a("color"));
 
 	float coordX;
 	float coordY;
 
+	//glDisable (GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	for (int i = numberOfParticles; i >=0; i--) {
@@ -105,6 +114,18 @@ void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, 
 		
 		glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(system[i].M));
 		glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, verts);
+		//float colors[24] = {
+		//	1.0f/(i%5),1.0f / (i % 8),0.0f,1.0f,
+		//	1.0f / (i % 5),1.0f / (i % 8),0.0f,1.0f,
+		//	1.0f / (i % 5),1.0f / (i % 8),0.0f,1.0f,
+
+		//	1.0f / (i % 5),1.0f / (i % 8),0.0f,1.0f,
+		//	1.0f / (i % 5),1.0f / (i % 8),0.0f,1.0f,
+		//	1.0f / (i % 5),1.0f / (i % 8),0.0f,1.0f };
+
+		//printf("aaaaaaaaaaaaa%f", 1.0f / (i % 5));
+
+		//glVertexAttribPointer(sp->a("color"), 4, GL_FLOAT, false, 0, colors);
 
 		coordX = 1 - (round(system[i].ttl * 7) / 12 - floor(round(system[i].ttl * 7) / 12)) - 1.0f / 12.0f;
 		coordY = 1-floor(round(system[i].ttl * 7) / 12) / 7 - 1.0f / 12.0f - 1.0f/14.0f;
@@ -130,7 +151,7 @@ void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, 
 
 	glDisableVertexAttribArray(sp->a("vertex"));
 	glDisableVertexAttribArray(sp->a("aTexCoord"));
-
+	//glEnable(GL_DEPTH_TEST);
 }
 
 int ParticleSystem::partition(Particle arr[], int low, int high) // dzielimy tablice na dwie czesci, w pierwszej wszystkie liczby sa mniejsze badz rowne x, w drugiej wieksze lub rowne od x

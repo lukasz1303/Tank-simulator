@@ -290,7 +290,7 @@ void drawScene(GLFWwindow* window) {
 	if (shoot_ball == true)
 	{
 		bullet.generate(P, V, tank.getM_lufa(), spt, bullet_texture.tex, particleSystem, SoundEngine);
-		particleSystem.drawParticles(P, V, spp, tank.getM_lufa(), cameraPos, pitch, speed,smog_texture.tex);
+		particleSystem.drawParticles(P, V, spp, tank.getM_lufa(), cameraPos, pitch, angle, speed,smog_texture.tex);
 	}
 
 	glfwSwapBuffers(window);

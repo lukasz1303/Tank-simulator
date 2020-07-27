@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Grass.cpp" />
     <ClCompile Include="ObjectLoader.cpp" />
     <ClCompile Include="Sky.cpp" />
     <ClCompile Include="source\Box.cpp" />
@@ -34,6 +35,7 @@
     <ClCompile Include="source\Tree.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Grass.h" />
     <ClInclude Include="include\Box.h" />
     <ClInclude Include="include\Bullet.h" />
     <ClInclude Include="include\constants.h" />

@@ -36,6 +36,7 @@ Place, Fifth Floor, Boston, MA  02110 - 1301  USA
 #include "include/ParticleSystem.h"
 #include "Sky.h"
 #include "ObjectLoader.h"
+#include "Grass.h"
 
 
 Bullet bullet = Bullet();
@@ -63,6 +64,7 @@ Floor ground = Floor();
 Sky sky = Sky();
 ParticleSystem particleSystem = ParticleSystem();
 ObjectLoader loader = ObjectLoader();
+Grass grass = Grass();
 
 irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
 
@@ -272,81 +274,7 @@ void drawScene(GLFWwindow* window) {
 	}
 	ground.draw_floor(P, V, floor_texture.tex, spg);
 
-	spl->use();
-	glUniformMatrix4fv(spl->u("P"), 1, false, glm::value_ptr(P));
-	glUniformMatrix4fv(spl->u("V"), 1, false, glm::value_ptr(V));
-
-	glm::mat4 M_grass = glm::mat4(1.0f);
-	
-	M_grass = glm::translate(M_grass, glm::vec3(-5.0f, 0.7f, -5.0f));
-
-	M_grass = glm::rotate(M_grass, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	//M_grass = glm::scale(M_floor, glm::vec3(1000.0f, 1000.0f, 1000.0f));
-
-	glUniformMatrix4fv(spl->u("M"), 1, false, glm::value_ptr(M_grass));
-	glUniformMatrix4fv(spl->u("V"), 1, false, glm::value_ptr(V));
-	glUniformMatrix4fv(spl->u("P"), 1, false, glm::value_ptr(P));
-
-	float verts[24] = {
-	  1.0f,-1.0f,0.0f,1.0f, //A
-	 -1.0f, 1.0f,0.0f,1.0f, //B
-	 -1.0f,-1.0f,0.0f,1.0f, //C
-
-	  1.0f,-1.0f,0.0f,1.0f, //A
-	  1.0f, 1.0f,0.0f,1.0f, //D
-	 -1.0f, 1.0f,0.0f,1.0f, //B
-	};
-
-	float texCoords[12] = {
-	  1.0f, 0.0f,   //A
-	  0.0f, 1.0f,    //B
-	  0.0f, 0.0f,    //C
-
-	  1.0f, 0.0f,    //A
-	  1.0f, 1.0f,    //D
-	  0.0f, 1.0f,    //B
-	};
-
-	glEnableVertexAttribArray(spl->a("vertex"));
-	glVertexAttribPointer(spl->a("vertex"), 4, GL_FLOAT, false, 0, verts);
-
-	glEnableVertexAttribArray(spl->a("aTexCoord"));
-	glVertexAttribPointer(spl->a("aTexCoord"), 2, GL_FLOAT, false, 0, texCoords);
-
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, grass_texture.tex);
-	glUniform1i(spl->u("ourTexture1"), 0);
-
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	M_grass = glm::mat4(1.0f);
-
-	M_grass = glm::translate(M_grass, glm::vec3(-5.0f, 0.7f, -5.0f));
-
-	M_grass = glm::rotate(M_grass, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	M_grass = glm::rotate(M_grass, glm::radians(60.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-
-	//M_grass = glm::scale(M_floor, glm::vec3(1000.0f, 1000.0f, 1000.0f));
-
-	glUniformMatrix4fv(spl->u("M"), 1, false, glm::value_ptr(M_grass));
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-
-	M_grass = glm::mat4(1.0f);
-
-	M_grass = glm::translate(M_grass, glm::vec3(-5.0f, 0.7f, -5.0f));
-
-	M_grass = glm::rotate(M_grass, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-	M_grass = glm::rotate(M_grass, glm::radians(120.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-
-	//M_grass = glm::scale(M_floor, glm::vec3(1000.0f, 1000.0f, 1000.0f));
-
-	glUniformMatrix4fv(spl->u("M"), 1, false, glm::value_ptr(M_grass));
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	glDisableVertexAttribArray(spl->a("vertex"));
-	glDisableVertexAttribArray(spl->a("aTexCoord"));
-
+	grass.draw(P, V, spl, grass_texture.tex);
 
 	shoot_ball = bullet.shooting(shoot_ball);
 

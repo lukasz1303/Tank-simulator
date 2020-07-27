@@ -9,9 +9,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
-#include "constants.h"
-#include "lodepng.h"
-#include "shaderprogram.h"
+#include "include\constants.h"
+#include "include\lodepng.h"
+#include "include\shaderprogram.h"
 
 class Tree
 {

@@ -32,8 +32,8 @@ void main(void) {
 
     vec4 ks = kd;
     float nld = nl2 * d2 + nl * d;
-    if (nld < 0.15) {
-        nld = 0.15;
+    if (nld < 0.4) {
+        nld = 0.4;
     }
     if (nld > 0.9) {
         nld = 0.9;

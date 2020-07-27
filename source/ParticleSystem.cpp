@@ -13,7 +13,6 @@ float ParticleSystem::normalRandom() {
 void ParticleSystem::createParticle(Particle& p) 
 {
 	p.position = glm::vec3(0.0f, 0.0f, 0.0f);
-	//p.speed = glm::vec3(0.0f, 0.0f, 0.0f);
 	p.speed = glm::vec3(glm::clamp(normalRandom() * 0.18f + 0.15f, -0.42f, 0.58f), glm::clamp(normalRandom() * 0.18f + 0.0f, -0.45f, 0.45f), glm::clamp(normalRandom() * 0.18f + 0.05f, -0.45f, 0.5f));
 
 	p.color = glm::vec4(glm::clamp((normalRandom() * 0.5f + 1), 0.2f, 1.0f), glm::clamp((normalRandom() * 0.4f + 0.3f), 0.0f, 0.5f), 0.0f, 1.0f);
@@ -101,7 +100,6 @@ void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, 
 	float coordX;
 	float coordY;
 
-	//glDisable (GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	for (int i = numberOfParticles; i >=0; i--) {
@@ -111,18 +109,6 @@ void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, 
 		
 		glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(system[i].M));
 		glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, verts);
-		//float colors[24] = {
-		//	1.0f/(i%5),1.0f / (i % 8),0.0f,1.0f,
-		//	1.0f / (i % 5),1.0f / (i % 8),0.0f,1.0f,
-		//	1.0f / (i % 5),1.0f / (i % 8),0.0f,1.0f,
-
-		//	1.0f / (i % 5),1.0f / (i % 8),0.0f,1.0f,
-		//	1.0f / (i % 5),1.0f / (i % 8),0.0f,1.0f,
-		//	1.0f / (i % 5),1.0f / (i % 8),0.0f,1.0f };
-
-		//printf("aaaaaaaaaaaaa%f", 1.0f / (i % 5));
-
-		//glVertexAttribPointer(sp->a("color"), 4, GL_FLOAT, false, 0, colors);
 
 		coordX = 1 - (round(system[i].ttl * 7) / 12 - floor(round(system[i].ttl * 7) / 12)) - 1.0f / 12.0f;
 		coordY = 1-floor(round(system[i].ttl * 7) / 12) / 7 - 1.0f / 12.0f - 1.0f/14.0f;
@@ -148,7 +134,6 @@ void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, 
 
 	glDisableVertexAttribArray(sp->a("vertex"));
 	glDisableVertexAttribArray(sp->a("aTexCoord"));
-	//glEnable(GL_DEPTH_TEST);
 }
 
 int ParticleSystem::partition(Particle arr[], int low, int high) // dzielimy tablice na dwie czesci, w pierwszej wszystkie liczby sa mniejsze badz rowne x, w drugiej wieksze lub rowne od x

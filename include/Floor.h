@@ -39,13 +39,13 @@ public:
 
 	//Tablica wspólrzednych teksturowania
 	float texCoords[12] = {
-	  500.0f, 0.0f,   //A
-	  0.0f, 500.0f,    //B
+	  200.0f, 0.0f,   //A
+	  0.0f, 200.0f,    //B
 	  0.0f, 0.0f,    //C
 
-	  500.0f, 0.0f,    //A
-	  500.0f, 500.0f,    //D
-	  0.0f, 500.0f,    //B
+	  200.0f, 0.0f,    //A
+	  200.0f, 200.0f,    //D
+	  0.0f, 200.0f,    //B
 	};
 
 	//Liczba wierzcholków w tablicy

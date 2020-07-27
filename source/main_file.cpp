@@ -350,7 +350,7 @@ int main(void)
 }
 
 void readAllTextures() {
-	floor_texture.readTexture((char*)"textures/ground4.png");
+	floor_texture.readTexture((char*)"textures/ground.png");
 	printf("Loaded ground.png\n");
 
 	lamp_bottom_texture.readTexture((char*)"textures/lantern_botom.png");

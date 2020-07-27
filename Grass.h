@@ -16,7 +16,7 @@
 class Grass
 {
 private:
-	float verts[24] = {
+	float verts[72] = {
 	  1.0f,-1.0f,0.0f,1.0f, //A
 	 -1.0f, 1.0f,0.0f,1.0f, //B
 	 -1.0f,-1.0f,0.0f,1.0f, //C
@@ -24,9 +24,41 @@ private:
 	  1.0f,-1.0f,0.0f,1.0f, //A
 	  1.0f, 1.0f,0.0f,1.0f, //D
 	 -1.0f, 1.0f,0.0f,1.0f, //B
+
+	  0.5f,-1.0f,0.866f,1.0f, //A
+	 -0.5f, 1.0f,-0.866f,1.0f, //B
+	 -0.5f,-1.0f,-0.866f,1.0f, //C
+
+	  0.5f,-1.0f,0.866f,1.0f, //A
+	  0.5f, 1.0f,0.866f,1.0f, //D
+	 -0.5f, 1.0f,-0.866f,1.0f, //B
+
+	  0.5f,-1.0f,-0.866f,1.0f, //A
+	 -0.5f, 1.0f,0.866f,1.0f, //B
+	 -0.5f,-1.0f,0.866f,1.0f, //C
+
+	  0.5f,-1.0f,-0.866f,1.0f, //A
+	  0.5f, 1.0f,-0.866f,1.0f, //D
+	 -0.5f, 1.0f,0.866f,1.0f, //B
 	};
 
-	float texCoords[12] = {
+	float texCoords[36] = {
+	  1.0f, 0.0f,   //A
+	  0.0f, 1.0f,    //B
+	  0.0f, 0.0f,    //C
+
+	  1.0f, 0.0f,    //A
+	  1.0f, 1.0f,    //D
+	  0.0f, 1.0f,    //B
+
+	  1.0f, 0.0f,   //A
+	  0.0f, 1.0f,    //B
+	  0.0f, 0.0f,    //C
+
+	  1.0f, 0.0f,    //A
+	  1.0f, 1.0f,    //D
+	  0.0f, 1.0f,    //B
+
 	  1.0f, 0.0f,   //A
 	  0.0f, 1.0f,    //B
 	  0.0f, 0.0f,    //C
@@ -36,7 +68,11 @@ private:
 	  0.0f, 1.0f,    //B
 	};
 
+	std::vector<float> positions;
+
 public:
+	Grass();
 	void draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, GLuint tex);
+	void setPositions();
 };
 

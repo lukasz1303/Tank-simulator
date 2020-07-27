@@ -21,7 +21,7 @@ void Grass::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, GLuint tex)
 	glm::mat4 M_grass;
 	for (int j = 0; j < 1000; j++) {
 		M_grass = glm::mat4(1.0f);
-		M_grass = glm::translate(M_grass, glm::vec3(positions[j*3], positions[j * 3+1], positions[j * 3+2]));
+		M_grass = glm::translate(M_grass, positions[j]);
 		M_grass = glm::rotate(M_grass, glm::radians(180.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 
 		glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M_grass));
@@ -35,8 +35,9 @@ void Grass::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, GLuint tex)
 
 void Grass::setPositions()
 {
-	float x, y, z, r, r2;
-	y = 0.7f;
+	glm::vec3 position;
+	float r, r2;
+	position.y = 0.7f;
 	for (int i = 0; i < 1000; i++) {
 		r2 = rand() % 10000 - 5000;
 		if (r2 < 0) {
@@ -46,11 +47,9 @@ void Grass::setPositions()
 			r = sqrt(r2);
 		}
 		float d = (rand() % 360);
-		x = r * sin(d* 3.141f / 180.0f);
-		z = r * cos(d * 3.141f / 180.0f);
-		this->positions.push_back(x);
-		this->positions.push_back(y);
-		this->positions.push_back(z);
+		position.x = r * sin(d* 3.141f / 180.0f);
+		position.z = r * cos(d * 3.141f / 180.0f);
+		this->positions.push_back(position);
 	}
 
 }

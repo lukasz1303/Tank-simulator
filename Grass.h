@@ -68,7 +68,7 @@ private:
 	  0.0f, 1.0f,    //B
 	};
 
-	std::vector<float> positions;
+	std::vector<glm::vec3> positions;
 
 public:
 	Grass();

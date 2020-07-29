@@ -131,7 +131,7 @@ void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, 
 
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
-
+	glDisable(GL_BLEND);
 	glDisableVertexAttribArray(sp->a("vertex"));
 	glDisableVertexAttribArray(sp->a("aTexCoord"));
 }

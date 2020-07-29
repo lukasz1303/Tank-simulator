@@ -48,6 +48,8 @@ Tree* trees[100];
 Lantern lantern = Lantern();
 Lantern lantern2 = Lantern();
 Texture floor_texture = Texture();
+Texture floor_texture1 = Texture();
+Texture floor_texture2 = Texture();
 Texture lamp_bottom_texture = Texture();
 Texture lamp_white_texture = Texture();
 Texture box_texture = Texture();
@@ -89,15 +91,15 @@ bool s_press = false;
 bool a_press = false;
 bool d_press = false;
 bool space_press = false;
-
 bool shot_audio = false;
+bool zoom = false;
 
-glm::vec3 cameraPos = glm::vec3(0.0f, 2.8f, 5.5f);
+glm::vec3 cameraPos = glm::vec3(0.0f, 2.6f, 4.5f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 glm::vec4 tank_position = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
 glm::vec3 speed_vector = glm::vec3(0.0f, 0.0f, 0.0f);
-glm::vec3 camera_transform = glm::vec3(0.0f, 2.8f, 5.5f);
+glm::vec3 camera_transform = glm::vec3(0.0f, 2.6f, 4.5f);
 
 std::vector< glm::vec4 > vertices;
 std::vector< glm::vec2 > uvs;
@@ -112,6 +114,7 @@ ShaderProgram* spp;
 ShaderProgram* spg;
 ShaderProgram* spl;
 ShaderProgram* sptree;
+ShaderProgram* spgrass;
 
 void readAllTextures();
 void loadAllObjects();
@@ -141,7 +144,7 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 	glm::vec3 direction;
 	direction.x = camera_transform[0] * cos(glm::radians(xoffset)) + camera_transform[2] * sin(glm::radians(xoffset));
 	direction.z = -camera_transform[0] * sin(glm::radians(xoffset)) + camera_transform[2] * cos(glm::radians(xoffset));
-	direction.y = 2.8f;
+	direction.y = camera_transform.y;
 	camera_transform = direction;
 }
 
@@ -181,6 +184,21 @@ void key_callback(GLFWwindow* window, int key,
 	}
 }
 
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+		zoom = !zoom;
+	if (zoom) {
+		cameraPos = glm::vec3(0.0f, 2.5f, cameraPos.z - 1.0f);
+		camera_transform = glm::vec3(0.0f, 2.5f, camera_transform.z - 1.0f);
+	}
+	else {
+		cameraPos = glm::vec3(0.0f, 2.6f, cameraPos.z + 1.0f);
+		camera_transform = glm::vec3(0.0f, 2.6f, camera_transform.z + 1.0f);
+	}
+}
+
+
 
 //Procedura obsługi błędów
 void error_callback(int error, const char* description) {
@@ -198,6 +216,7 @@ void initOpenGLProgram(GLFWwindow* window) {
 	glfwSetCursorPosCallback(window, mouse_callback);
 
 	glfwSetKeyCallback(window, key_callback);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
 
 	readAllTextures();
 	loadAllObjects();
@@ -225,6 +244,7 @@ void freeOpenGLProgram(GLFWwindow* window) {
 void drawScene(GLFWwindow* window) {
 
 	glm::vec3 speed = glm::vec3(0.0f);
+
 	if (w_press) {
 		speed = glm::vec3(-movingSpeed * cos(angle * PI / 180), 0.0f, movingSpeed * sin(angle * PI / 180));
 		speed_vector -= speed;
@@ -253,11 +273,8 @@ void drawScene(GLFWwindow* window) {
 	tank_position = tank.getPosition();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glm::mat4 V = glm::lookAt(cameraPos, cameraFront, cameraUp);
-	//std::cout << "x " << cameraPos.x << ", y " << cameraPos.y << ", z " << cameraPos.z << std::endl;
+	//glm::mat4 V = glm::lookAt(cameraPos, cameraFront, cameraUp);
 	glm::mat4 P = glm::perspective(glm::radians(85.0f), 1.8f, 1.0f, 100.0f);
-
-	sky.draw_sky(P, V, skybox, spl, speed_vector);
 
 	spt->use();
 
@@ -265,16 +282,18 @@ void drawScene(GLFWwindow* window) {
 	glUniform4f(spt->u("lp2"), -50, 20, -50, 1);
 
 	tank.move(P,speed_vector, wheel_speed_left, wheel_speed_right, angle, pitch, yaw, camera_transform, cameraFront, cameraPos, cameraUp, spt, tank_texture.tex, wheel_texture.tex);
+	glm::mat4 V = glm::lookAt(cameraPos, cameraFront, cameraUp);
 
+	sky.draw_sky(P, V, skybox, spl, speed_vector);
 	tree.draw(P, V, sptree, tree_texture.tex, tree_texture2.tex);
 	tree2.draw(P, V, sptree, tree_texture.tex, tree_texture2.tex);
 
 	for (int i = 0; i < 25; i++) {
 		trees[i]->draw(P, V, sptree, tree_texture.tex, tree_texture2.tex);
 	}
-	ground.draw_floor(P, V, floor_texture.tex, spg);
+	ground.draw_floor(P, V, floor_texture.tex, floor_texture1.tex, floor_texture2.tex, spg);
 
-	grass.draw(P, V, spl, grass_texture.tex);
+	grass.draw(P, V, spgrass, grass_texture.tex, floor_texture.tex);
 
 	shoot_ball = bullet.shooting(shoot_ball);
 
@@ -350,8 +369,14 @@ int main(void)
 }
 
 void readAllTextures() {
-	floor_texture.readTexture((char*)"textures/ground.png");
+	floor_texture.readTexture((char*)"textures/Ground_Forest.png");
 	printf("Loaded ground.png\n");
+
+	floor_texture1.readTexture((char*)"textures/Ground_Forest_normal.png");
+	printf("Loaded ground_normal.png\n");
+
+	floor_texture2.readTexture((char*)"textures/Ground_Forest_height.png");
+	printf("Loaded ground_height.png\n");
 
 	lamp_bottom_texture.readTexture((char*)"textures/lantern_botom.png");
 	printf("Loaded lantern_botom.png\n");
@@ -483,4 +508,5 @@ void loadShaders() {
 	spg = new ShaderProgram("shaders/v_floor.glsl", NULL, "shaders/f_floor.glsl");
 	spl = new ShaderProgram("shaders/v_lamp.glsl", NULL, "shaders/f_lamp.glsl");
 	sptree = new ShaderProgram("shaders/v_tree.glsl", NULL, "shaders/f_tree.glsl");
+	spgrass = new ShaderProgram("shaders/v_grass.glsl", NULL, "shaders/f_grass.glsl");
 }

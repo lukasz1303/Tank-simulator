@@ -5,7 +5,7 @@ Grass::Grass()
 	setPositions();
 }
 
-void Grass::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, GLuint tex)
+void Grass::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, GLuint tex, GLuint tex2)
 {
 	sp->use();
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -17,7 +17,10 @@ void Grass::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, GLuint tex)
 	glVertexAttribPointer(sp->a("aTexCoord"), 2, GL_FLOAT, false, 0, texCoords);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex);
-	glUniform1i(sp->u("ourTexture1"), 0);
+	glUniform1i(sp->u("ourTexture"), 0);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, tex2);
+	glUniform1i(sp->u("ourTexture2"), 1);
 	glm::mat4 M_grass;
 	for (int j = 0; j < 1000; j++) {
 		M_grass = glm::mat4(1.0f);
@@ -39,13 +42,14 @@ void Grass::setPositions()
 	float r, r2;
 	position.y = 0.7f;
 	for (int i = 0; i < 1000; i++) {
-		r2 = rand() % 10000 - 5000;
-		if (r2 < 0) {
+		r2 = rand() % 600 - 300;
+		r = pow(r2, 1.0f / 1.3f);
+		/*if (r2 < 0) {
 			r = -sqrt(-r2);
 		}
 		else {
 			r = sqrt(r2);
-		}
+		}*/
 		float d = (rand() % 360);
 		position.x = r * sin(d* 3.141f / 180.0f);
 		position.z = r * cos(d * 3.141f / 180.0f);

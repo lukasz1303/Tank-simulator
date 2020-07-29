@@ -17,6 +17,7 @@ void Tree::setCords(glm::vec3 coords)
 
 void Tree::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp,  GLuint tex, GLuint tex2)
 {
+	sp->use();
 	glm::mat4 M_tree = glm::mat4(1.0f);
 	float color[] = { 1,1,0,1 };
 	glVertexAttribPointer(sp->a("color"), 4, GL_FLOAT, false, 0, color);
@@ -24,9 +25,9 @@ void Tree::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp,  GLuint tex, GLuint
 	M_tree = glm::translate(M_tree, glm::vec3(coordinates));
 	M_tree = glm::scale(M_tree, glm::vec3(scale, scale, scale));
 
-	sp->use();
-	glUniform4f(sp->u("lp"), -4, 3, -4, 1);
-	glUniform4f(sp->u("lp2"), -50, 20, -50, 1);
+
+	glUniform4f(sp->u("lp"), -4.0, 3.5, -4.0, 1.0);
+	glUniform4f(sp->u("lp2"), -50.0, 20.0, -50.0, 1.0);
 
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M_tree));
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
@@ -34,8 +35,8 @@ void Tree::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp,  GLuint tex, GLuint
 
 	glm::mat4 PVM = P * V * M_tree;
 	glm::mat4 VM = V * M_tree;
-	glm::vec4 Vlp = V * glm::vec4(-4, 3, -4, 1);
-	glm::vec4 Vlp2 = V * glm::vec4(-50, 20, -50, 1);
+	glm::vec4 Vlp = V * glm::vec4(-4.0, 3.5, -4.0, 1.0);
+	glm::vec4 Vlp2 = V * glm::vec4(-50.0, 20.0, -50.0, 1.0);
 	glUniformMatrix4fv(sp->u("PVM"), 1, false, glm::value_ptr(PVM));
 	glUniformMatrix4fv(sp->u("VM"), 1, false, glm::value_ptr(VM));
 	glUniform4fv(sp->u("Vlp"), sizeof(Vlp),glm::value_ptr(Vlp));

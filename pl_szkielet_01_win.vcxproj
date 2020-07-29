@@ -52,12 +52,14 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\f_floor.glsl" />
+    <None Include="shaders\f_grass.glsl" />
     <None Include="shaders\f_lamp.glsl" />
     <None Include="shaders\f_particle.glsl" />
     <None Include="shaders\f_particle_text.glsl" />
     <None Include="shaders\f_text.glsl" />
     <None Include="shaders\f_tree.glsl" />
     <None Include="shaders\v_floor.glsl" />
+    <None Include="shaders\v_grass.glsl" />
     <None Include="shaders\v_lamp.glsl" />
     <None Include="shaders\v_particle.glsl" />
     <None Include="shaders\v_particle_text.glsl" />

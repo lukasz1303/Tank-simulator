@@ -59,6 +59,7 @@ glm::mat4 Tank::getM()
 
 void Tank::move(glm::mat4 P, glm::vec3 speed_vector, float wheel_speed_left, float wheel_speed_right, float angle, float pitch, float yaw, glm::vec3 &camera_transform, glm::vec3 &cameraFront, glm::vec3 &cameraPos, glm::vec3 cameraUp, ShaderProgram *sp, GLuint tex, GLuint tex2)
 {
+	sp->use();
 	glm::mat4 M = glm::mat4(1.0f);
 
 	M = glm::translate(M, speed_vector);
@@ -71,7 +72,7 @@ void Tank::move(glm::mat4 P, glm::vec3 speed_vector, float wheel_speed_left, flo
 	glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
 
-	sp->use();
+	
 
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M));
 

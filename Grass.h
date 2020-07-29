@@ -72,7 +72,7 @@ private:
 
 public:
 	Grass();
-	void draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, GLuint tex);
+	void draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, GLuint tex, GLuint tex2);
 	void setPositions();
 };
 

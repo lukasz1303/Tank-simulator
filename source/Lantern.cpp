@@ -54,8 +54,9 @@ void Lantern::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, ShaderProgram* s
 	glEnableVertexAttribArray(sp->a("aTexCoord"));
 	glVertexAttribPointer(sp->a("aTexCoord"), 2, GL_FLOAT, false, 0, &uvs[0]);
 
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex);
-	glUniform1i(sp->u("ourTexture1"), 0);
+	glUniform1i(sp->u("ourTexture"), 0);
 
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 	glDisableVertexAttribArray(sp->a("vertex"));

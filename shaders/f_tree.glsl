@@ -18,7 +18,7 @@ uniform sampler2D ourTexture;
 void main(void) {
 
     vec4 kd = texture(ourTexture, TexCoord);
-    if (kd.a < 0.5) //for example, change to any value suitable
+    if (kd.a < 0.4) //for example, change to any value suitable
         discard;
     vec4 mn = normalize(n);
     vec4 ml = normalize(l);

@@ -42,7 +42,7 @@ void main(void) {
    
    
     vec4 mv = normalize(v);
-    vec2 nt = parallaxTexCoords(mv,TexCoord,0.1,100);
+    vec2 nt = parallaxTexCoords(mv,TexCoord,0.1,10);
     
     vec4 ml = normalize(l);
     vec4 mn = normalize(vec4(texture(ourTexture1, nt).rgb*2-1,0));

@@ -405,7 +405,7 @@ void readAllTextures() {
 	smog_texture.readTexture((char*)"textures/smog.png");
 	printf("Loaded smog.png\n");
 
-	grass_texture.readTexture((char*)"textures/grass.png");
+	grass_texture.readTexture((char*)"textures/grass2.png");
 	printf("Loaded grass.png\n");
 
 	char carray[6][128] =

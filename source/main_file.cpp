@@ -94,12 +94,12 @@ bool space_press = false;
 bool shot_audio = false;
 bool zoom = false;
 
-glm::vec3 cameraPos = glm::vec3(0.0f, 2.6f, 4.5f);
+glm::vec3 cameraPos = glm::vec3(0.0f, 3.0f, 7.5f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 glm::vec4 tank_position = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
 glm::vec3 speed_vector = glm::vec3(0.0f, 0.0f, 0.0f);
-glm::vec3 camera_transform = glm::vec3(0.0f, 2.6f, 4.5f);
+glm::vec3 camera_transform = glm::vec3(0.0f, 3.0f, 7.5f);
 
 std::vector< glm::vec4 > vertices;
 std::vector< glm::vec2 > uvs;
@@ -186,15 +186,14 @@ void key_callback(GLFWwindow* window, int key,
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
 		zoom = !zoom;
-	if (zoom) {
-		cameraPos = glm::vec3(0.0f, 2.5f, cameraPos.z - 1.0f);
-		camera_transform = glm::vec3(0.0f, 2.5f, camera_transform.z - 1.0f);
-	}
-	else {
-		cameraPos = glm::vec3(0.0f, 2.6f, cameraPos.z + 1.0f);
-		camera_transform = glm::vec3(0.0f, 2.6f, camera_transform.z + 1.0f);
+		if (zoom) {
+			camera_transform = glm::vec3(camera_transform.x - sin(glm::radians(pitch))*(2), camera_transform.y-0.2f, camera_transform.z - cos(glm::radians(pitch)) * (2));
+		}
+		else {
+			camera_transform = glm::vec3(camera_transform.x + sin(glm::radians(pitch)) * (2), camera_transform.y+0.2f, camera_transform.z + cos(glm::radians(pitch)) * (2));
+		}
 	}
 }
 
@@ -244,7 +243,7 @@ void freeOpenGLProgram(GLFWwindow* window) {
 void drawScene(GLFWwindow* window) {
 
 	glm::vec3 speed = glm::vec3(0.0f);
-
+	printf("%f\n", pitch);
 	if (w_press) {
 		speed = glm::vec3(-movingSpeed * cos(angle * PI / 180), 0.0f, movingSpeed * sin(angle * PI / 180));
 		speed_vector -= speed;
@@ -274,7 +273,7 @@ void drawScene(GLFWwindow* window) {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//glm::mat4 V = glm::lookAt(cameraPos, cameraFront, cameraUp);
-	glm::mat4 P = glm::perspective(glm::radians(85.0f), 1.8f, 1.0f, 100.0f);
+	glm::mat4 P = glm::perspective(glm::radians(50.0f), 1.8f, 1.0f, 100.0f);
 
 	spt->use();
 

@@ -33,16 +33,6 @@ void Tree::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp,  GLuint tex, GLuint
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
 	glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
 
-	glm::mat4 PVM = P * V * M_tree;
-	glm::mat4 VM = V * M_tree;
-	glm::vec4 Vlp = V * glm::vec4(-4.0, 3.5, -4.0, 1.0);
-	glm::vec4 Vlp2 = V * glm::vec4(-50.0, 20.0, -50.0, 1.0);
-	glUniformMatrix4fv(sp->u("PVM"), 1, false, glm::value_ptr(PVM));
-	glUniformMatrix4fv(sp->u("VM"), 1, false, glm::value_ptr(VM));
-	glUniform4fv(sp->u("Vlp"), sizeof(Vlp),glm::value_ptr(Vlp));
-	glUniform4fv(sp->u("Vlp2"), sizeof(Vlp2), glm::value_ptr(Vlp2));
-
-
 	glEnableVertexAttribArray(sp->a("vertex"));
 	glEnableVertexAttribArray(sp->a("normal"));
 	glEnableVertexAttribArray(sp->a("aTexCoord"));

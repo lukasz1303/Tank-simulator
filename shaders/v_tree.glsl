@@ -4,10 +4,6 @@
 uniform mat4 P;
 uniform mat4 V;
 uniform mat4 M;
-uniform mat4 PVM;
-uniform mat4 VM;
-uniform vec4 Vlp;
-uniform vec4 Vlp2;
 
 
 //Atrybuty
@@ -32,27 +28,27 @@ out vec2 TexCoord;
 
 void main(void) {
 
-    vec4 VMv = VM * vertex;
-    l = normalize(Vlp - VMv);
-    n = normalize(VM * normal);
+    vec4 VMv = V*M * vertex;
+    l = normalize(V*lp - VMv);
+    n = normalize(V*M * normal);
     v = normalize(vec4(0, 0, 0, 1) - VMv);
 
-    l2 = normalize(Vlp2 - VMv);
+    l2 = normalize(V*lp2 - VMv);
 
-    d = distance(VMv, Vlp);
+    d = distance(VMv, V*lp);
     d = 1 - (d / 100.0f);
     if (d < 0.1)
         d = 0.1;
     if (d > 0.9)
         d = 0.9;
 
-    d2 = distance(VMv, Vlp2);
+    d2 = distance(VMv, V*lp2);
     d2 = 1 - (d2 / 100.0f);
     if (d2 < 0.1)
         d2 = 0.1;
     if (d2 > 0.9)
         d2 = 0.9;
 
-    gl_Position = PVM * vertex;
+    gl_Position = P*V*M * vertex;
     TexCoord = aTexCoord;
 }

@@ -9,7 +9,7 @@ uniform sampler2D ourTexture;
 uniform sampler2D ourTexture2;
 
 void main(void) {
-    vec4 kd = mix(texture(ourTexture, TexCoord), texture(ourTexture2, TexCoord), 0.3);
+    vec4 kd = mix(texture(ourTexture, TexCoord), texture(ourTexture2, TexCoord), 0.2);
 	if(kd.a<0.5){
 		discard;
 	}

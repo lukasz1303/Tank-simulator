@@ -66,8 +66,8 @@ void Tank::move(glm::mat4 P, glm::vec3 speed_vector, float wheel_speed_left, flo
 	M = glm::translate(M, glm::vec3(0.0f,0.4f,0.0f));
 	M = glm::rotate(M, glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
 	tank_position = M * Position;
-	cameraFront = glm::vec3(tank_position[0], tank_position[1], tank_position[2]);
-	cameraPos = camera_transform + cameraFront;
+	cameraPos = camera_transform + glm::vec3(tank_position[0], tank_position[1], tank_position[2]);
+	cameraFront = glm::vec3(tank_position[0]-sin(glm::radians(pitch))*(15.0f), tank_position[1], tank_position[2] - cos(glm::radians(pitch)) * (15.0f));
 	glm::mat4 V = glm::lookAt(cameraPos, cameraFront, cameraUp);
 	glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));

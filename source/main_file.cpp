@@ -74,14 +74,15 @@ irrklang::ISoundEngine* SoundEngine = irrklang::createIrrKlangDevice();
 float angle = 90.0f;
 bool shoot_ball = false;
 bool fisrt_frame_shot = true;
-float lastX = 400;
-float lastY = 300;
+float lastX = 960;
+float lastY = 540;
 float yaw = 0.0f;
 float pitch = 0.0f;
 float yaw_limit_down = 0.0f;
 float yaw_limit_up = 10.0f;
 float wheel_speed_right = 0.0f;
 float wheel_speed_left = 0.0f;
+float fov = 100.0f;
 
 const float movingSpeed = 0.1f;
 const float rotateSpeed = PI / 2;
@@ -212,16 +213,14 @@ void initOpenGLProgram(GLFWwindow* window) {
 	glEnable(GL_BLEND);
 
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-	glfwSetCursorPosCallback(window, mouse_callback);
-
-	glfwSetKeyCallback(window, key_callback);
-	glfwSetMouseButtonCallback(window, mouse_button_callback);
-
+	
 	readAllTextures();
 	loadAllObjects();
 	loadShaders();
-	particleSystem.initializeSystem(400);
 
+	glfwSetKeyCallback(window, key_callback);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSetCursorPosCallback(window, mouse_callback);
 	
 }
 
@@ -273,7 +272,7 @@ void drawScene(GLFWwindow* window) {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	//glm::mat4 V = glm::lookAt(cameraPos, cameraFront, cameraUp);
-	glm::mat4 P = glm::perspective(glm::radians(50.0f), 1.8f, 1.0f, 100.0f);
+	glm::mat4 P = glm::perspective(glm::radians(fov/2.0f), 1.8f, 1.0f, 100.0f);
 
 	spt->use();
 
@@ -292,7 +291,7 @@ void drawScene(GLFWwindow* window) {
 	}
 	ground.draw_floor(P, V, floor_texture.tex, floor_texture1.tex, floor_texture2.tex, spg);
 
-	grass.draw(P, V, spgrass, grass_texture.tex, floor_texture.tex);
+	grass.draw(P, V, spgrass, tank.getPosition(), grass_texture.tex, floor_texture.tex);
 
 	shoot_ball = bullet.shooting(shoot_ball);
 
@@ -342,7 +341,7 @@ int main(void)
 	}
 
 	glfwMakeContextCurrent(window);
-	glfwSwapInterval(1);
+	glfwSwapInterval(0);
 
 	if (glewInit() != GLEW_OK) 
 	{ 
@@ -386,11 +385,11 @@ void readAllTextures() {
 	box_texture.readTexture((char*)"textures/light_wood.png");
 	printf("Loaded light_wood.png\n");
 
-	tree_texture.readTexture((char*)"textures/tree.png");
-	printf("Loaded tree.png\n");
-
-	tree_texture2.readTexture((char*)"textures/leaf.png");
+	tree_texture.readTexture((char*)"textures/BarkPine2.png");
 	printf("Loaded leaf.png\n");
+
+	tree_texture2.readTexture((char*)"textures/Fantasy_conifer_3.png");
+	printf("Loaded tree.png\n");
 
 	bullet_texture.readTexture((char*)"textures/bullet.png");
 	printf("Loaded bullet.png\n");
@@ -459,12 +458,15 @@ void loadAllObjects() {
 	printf("Loaded wheel.obj %d\n", res);
 	tank.setObjectWheel(vertices, uvs, normals);
 
-	res = loader.loadOBJ("objects/tree2.obj", vertices, uvs, normals, numberOfTextures, startVertices);
+	res = loader.loadOBJ("objects/tree5.obj", vertices, uvs, normals, numberOfTextures, startVertices);
 	printf("Loaded tree.obj %d\n",res);
 	texes.clear();
 	texes.push_back(tree_texture.tex);
 	texes.push_back(tree_texture2.tex);
+	texes.push_back(tree_texture2.tex);
+	texes.push_back(tree_texture2.tex);
 
+	printf("%d\n\n\n", numberOfTextures);
 	tree.setObject(vertices, uvs, normals, numberOfTextures, startVertices, texes);
 	tree2.setObject(vertices, uvs, normals, numberOfTextures, startVertices, texes);
 

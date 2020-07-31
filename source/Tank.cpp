@@ -69,11 +69,9 @@ void Tank::move(glm::mat4 P, glm::vec3 speed_vector, float wheel_speed_left, flo
 	cameraPos = camera_transform + glm::vec3(tank_position[0], tank_position[1], tank_position[2]);
 	cameraFront = glm::vec3(tank_position[0]-sin(glm::radians(pitch))*(15.0f), tank_position[1], tank_position[2] - cos(glm::radians(pitch)) * (15.0f));
 	glm::mat4 V = glm::lookAt(cameraPos, cameraFront, cameraUp);
+
 	glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
-
-	
-
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M));
 
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -91,7 +89,6 @@ void Tank::move(glm::mat4 P, glm::vec3 speed_vector, float wheel_speed_left, flo
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
 	M_wieza = glm::translate(M, glm::vec3(0.2f, 1.02f, 0.0f));
-
 	M_wieza = glm::rotate(M_wieza, glm::radians(90.0f - angle), glm::vec3(0.0f, 1.0f, 0.0f));
 	M_wieza = glm::rotate(M_wieza, glm::radians(pitch), glm::vec3(0.0f, 1.0f, 0.0f));
 

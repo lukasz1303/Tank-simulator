@@ -5,7 +5,7 @@ Grass::Grass()
 	setPositions();
 }
 
-void Grass::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, GLuint tex, GLuint tex2)
+void Grass::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::vec4 tankPosition, GLuint tex, GLuint tex2)
 {
 	sp->use();
 	glEnableVertexAttribArray(sp->a("vertex"));
@@ -20,6 +20,11 @@ void Grass::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, GLuint tex, GLuint
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glVertexAttribDivisor(2, 1);
 
+	//for(int i = 0; i <positions.size();i++)
+	//{
+	//	positions[i] += glm::vec3(tankPosition.x, tankPosition.y, tankPosition.z);
+	//}
+
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, tex);
@@ -33,7 +38,7 @@ void Grass::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, GLuint tex, GLuint
 	M_grass = glm::scale(M_grass, glm::vec3(0.7f, 0.7f, 0.7f));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M_grass));
 	
-	glDrawArraysInstanced(GL_TRIANGLES, 0, 12,10000);
+	glDrawArraysInstanced(GL_TRIANGLES, 0, 12,2000);
 	glDisableVertexAttribArray(sp->a("vertex"));
 	glDisableVertexAttribArray(sp->a("aTexCoord"));
 	glDisableVertexAttribArray(sp->a("offset"));
@@ -46,8 +51,8 @@ void Grass::setPositions()
 	glm::vec3 position;
 	float r, r2;
 	position.y = -0.9f;
-	for (int i = 0; i < 10000; i++) {
-		r2 = rand() % 300;
+	for (int i = 0; i < 2000; i++) {
+		r2 = rand() % 500;
 		r = pow(r2, 1.0f / 1.3f);
 		/*if (r2 < 0) {
 			r = -sqrt(-r2);

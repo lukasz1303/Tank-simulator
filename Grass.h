@@ -56,7 +56,7 @@ private:
 
 public:
 	Grass();
-	void draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, GLuint tex, GLuint tex2);
+	void draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::vec4 tankPosition, GLuint tex, GLuint tex2);
 	void setPositions();
 };
 

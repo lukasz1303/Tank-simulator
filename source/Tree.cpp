@@ -15,6 +15,11 @@ void Tree::setCords(glm::vec3 coords)
 	coordinates = coords;
 }
 
+glm::vec3 Tree::getCords()
+{
+	return coordinates;
+}
+
 void Tree::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp,  GLuint tex, GLuint tex2)
 {
 	sp->use();

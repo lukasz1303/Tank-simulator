@@ -31,6 +31,7 @@ private:
 public:
 	void setObject(std::vector < glm::vec4 > out_vertices, std::vector < glm::vec2 > out_uvs, std::vector < glm::vec4 > out_normals, int numberOfTextures, std::vector<int> startVertices, std::vector<GLuint> texes);
 	void setCords(glm::vec3 coords);
+	glm::vec3 getCords();
 	void draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, GLuint tex, GLuint tex2);
 	void setScale(float scale);
 };

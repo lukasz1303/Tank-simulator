@@ -20,19 +20,21 @@ glm::vec3 Tree::getCords()
 	return coordinates;
 }
 
-void Tree::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp,  GLuint tex, GLuint tex2)
+void Tree::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp,  GLuint tex, GLuint tex2, glm::vec3 cameraPos)
 {
 	sp->use();
 	glm::mat4 M_tree = glm::mat4(1.0f);
 	float color[] = { 1,1,0,1 };
 	glVertexAttribPointer(sp->a("color"), 4, GL_FLOAT, false, 0, color);
-
+	float dis = glm::distance(coordinates, cameraPos);
+	dis = exp(-pow(dis * 0.007f, 1.5));
 	M_tree = glm::translate(M_tree, glm::vec3(coordinates));
 	M_tree = glm::scale(M_tree, glm::vec3(scale, scale, scale));
 
 
 	glUniform4f(sp->u("lp"), -4.0, 3.5, -4.0, 1.0);
 	glUniform4f(sp->u("lp2"), -50.0, 20.0, -50.0, 1.0);
+	glUniform1f(sp->u("dis"), 1.0f-glm::clamp(dis,0.0f,1.0f));
 
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M_tree));
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));

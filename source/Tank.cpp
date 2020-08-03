@@ -63,7 +63,9 @@ void Tank::move(glm::mat4 P, glm::vec3 speed_vector, float wheel_speed_left, flo
 	glm::mat4 M = glm::mat4(1.0f);
 
 	M = glm::translate(M, speed_vector);
-	M = glm::translate(M, glm::vec3(0.0f,0.4f,0.0f));
+	float height = heightMap[(int)floor((speed_vector.x + 25 * 50) / 50)][(int)floor((speed_vector.z + 25 * 50) / 50)];
+	printf("%d, %d", (int)floor((speed_vector.x +25*50)/50), (int)floor((speed_vector.z + 25 * 50) / 50));
+	M = glm::translate(M, glm::vec3(0.0f,0.4f+height,0.0f));
 	M = glm::rotate(M, glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
 	tank_position = M * Position;
 	cameraPos = camera_transform + glm::vec3(tank_position[0], tank_position[1], tank_position[2]);
@@ -124,8 +126,9 @@ void Tank::move(glm::mat4 P, glm::vec3 speed_vector, float wheel_speed_left, flo
 			else
 				M_wheel = glm::rotate(M_wheel, glm::radians(40 * -wheel_speed_right), glm::vec3(0.0f, 0.0f, 1.0f));
 
+			M_wheel = glm::rotate(M_wheel, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-			M_wheel = glm::scale(M_wheel, glm::vec3(0.9f, 0.9f, 0.9f));
+			M_wheel = glm::scale(M_wheel, glm::vec3(0.05f, 0.05f, 0.05f));
 
 			glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M_wheel));
 			

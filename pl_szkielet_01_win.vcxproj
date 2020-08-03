@@ -19,8 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Frustrum.cpp" />
     <ClCompile Include="Grass.cpp" />
     <ClCompile Include="ObjectLoader.cpp" />
+    <ClCompile Include="Plane.cpp" />
     <ClCompile Include="Sky.cpp" />
     <ClCompile Include="source\Box.cpp" />
     <ClCompile Include="source\Bullet.cpp" />
@@ -35,6 +37,7 @@
     <ClCompile Include="source\Tree.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Frustrum.h" />
     <ClInclude Include="Grass.h" />
     <ClInclude Include="include\Box.h" />
     <ClInclude Include="include\Bullet.h" />
@@ -48,6 +51,7 @@
     <ClInclude Include="include\Texture.h" />
     <ClInclude Include="include\Tree.h" />
     <ClInclude Include="ObjectLoader.h" />
+    <ClInclude Include="Plane.h" />
     <ClInclude Include="Sky.h" />
   </ItemGroup>
   <ItemGroup>

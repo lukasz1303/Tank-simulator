@@ -14,6 +14,6 @@ void main(void) {
 	}
 
 
-	pixelColor= vec4(kd.rgb, kd.a);
+	pixelColor= mix(vec4(kd.rgb, kd.a),vec4(0.8,0.8,0.8,1.0),0.1);
 
 }

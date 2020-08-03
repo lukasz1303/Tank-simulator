@@ -21,6 +21,7 @@ out float d2;
 
 uniform vec4 lp;
 uniform vec4 lp2;
+uniform vec3 cameraPos;
 
 in vec2 aTexCoord;
 

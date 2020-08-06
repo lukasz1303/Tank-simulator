@@ -106,7 +106,7 @@ glm::vec3 cameraPos = glm::vec3(0.0f, 3.0f, 7.5f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
 glm::vec4 tank_position = glm::vec4(0.0f, 0.0f, -1.0f, 0.0f);
-glm::vec3 speed_vector = glm::vec3(0.0f, 0.0f, 0.0f);
+glm::vec3 speed_vector = glm::vec3(0.001f, 0.0f, 0.0f);
 glm::vec3 camera_transform = glm::vec3(0.0f, 3.0f, 7.5f);
 
 std::vector< glm::vec4 > vertices;
@@ -285,7 +285,7 @@ void drawScene(GLFWwindow* window) {
 	glUniform4f(spt->u("lp"), -4, 3.5, -4, 1);
 	glUniform4f(spt->u("lp2"), -50, 20, -50, 1);
 
-	tank.move(P,speed_vector, wheel_speed_left, wheel_speed_right, angle, pitch, yaw, camera_transform, cameraFront, cameraPos, cameraUp, spt, tank_texture.tex, wheel_texture.tex);
+	tank.move(P,ground,speed_vector, wheel_speed_left, wheel_speed_right, angle, pitch, yaw, camera_transform, cameraFront, cameraPos, cameraUp, spt, tank_texture.tex, wheel_texture.tex);
 	glm::mat4 V = glm::lookAt(cameraPos, cameraFront, cameraUp);
 	
 	frustrum.setFrustrum(cameraPos, cameraFront, cameraUp, ratio, fov, nearDist, farDist);
@@ -304,8 +304,8 @@ void drawScene(GLFWwindow* window) {
 		}
 			
 	}
-	printf("count = %d\n", count);
-	ground.draw_floor(P, V, floor_texture.tex, floor_texture1.tex, floor_texture2.tex, spl, cameraPos);
+	//printf("count = %d\n", count);
+	ground.draw_floor(P, V, floor_texture.tex, floor_texture1.tex, floor_texture2.tex, spt, cameraPos);
 
 	grass.draw(P, V, spgrass, tank.getPosition(),frustrum, grass_texture.tex, floor_texture.tex);
 
@@ -474,6 +474,15 @@ void loadAllObjects() {
 	printf("Loaded wheel.obj %d\n", res);
 	tank.setObjectWheel(vertices, uvs, normals);
 
+	res = loader.loadHeights(ground.heightMap, "height2.txt");
+	printf("Loaded height2.txt %d\n", res);
+	res = loader.loadVerts(ground.verts, "coords2.txt");
+	printf("Loaded coords2.txt %d\n", res);
+	res = loader.loadVerts(ground.normals, "normals.txt");
+	printf("Loaded normals.txt %d\n", res);
+
+	grass.setPositions(ground);
+
 	res = loader.loadOBJ("objects/tree5.obj", vertices, uvs, normals, numberOfTextures, startVertices);
 	printf("Loaded tree.obj %d\n",res);
 	texes.clear();
@@ -496,7 +505,7 @@ void loadAllObjects() {
 				x = 25.0f;
 				z = 25.0f;
 			}
-			cords[n] = glm::vec3(x, 0.0f, z);
+			cords[n] = glm::vec3(x, ground.calculateHeight(x,z), z);
 			n += 1;
 		}
 	}
@@ -510,13 +519,15 @@ void loadAllObjects() {
 
 	}
 
-	tree.setCords(glm::vec3(2.0f, 0.0f, -20.0f));
-	tree2.setCords(glm::vec3(-17.0f, 0.0f, 10.0f));
+	tree.setCords(glm::vec3(2.0f, ground.calculateHeight(2.0f, 20.0f), -20.0f));
+	tree2.setCords(glm::vec3(-17.0f, ground.calculateHeight(17.0f, 10.0f), 10.0f));
 
-	box.setCords(glm::vec3(4.0f, 0.0f, -4.0f));
+	box.setCords(glm::vec3(4.0f, ground.calculateHeight(4.0f, 4.0f), -4.0f));
 
-	lantern.setCords(glm::vec3(-4.0f, 0.0f, -4.0f));
-	lantern2.setCords(glm::vec3(-12.0f, 0.0f, -12.0f));
+	lantern.setCords(glm::vec3(-4.0f, ground.calculateHeight(4.0f, 4.0f), -4.0f));
+	lantern2.setCords(glm::vec3(-12.0f, ground.calculateHeight(12.0f, 12.0f), -12.0f));
+
+
 }
 
 void loadShaders() {

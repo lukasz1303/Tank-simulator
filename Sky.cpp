@@ -7,6 +7,7 @@ void Sky::draw_sky(glm::mat4 P, glm::mat4 V, Texture skybox[], ShaderProgram* sp
 	glm::mat4 M_skyBox = glm::mat4(1.0f);
 
 	M_skyBox = glm::translate(M_skyBox, speed_vector);
+	M_skyBox = glm::translate(M_skyBox, glm::vec3(0.0f,-6.0f,0.0f));
 	M_skyBox = glm::rotate(M_skyBox, glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	M_skyBox = glm::scale(M_skyBox, glm::vec3(200.0f, 200.0f, 200.0f));

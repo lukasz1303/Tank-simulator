@@ -57,15 +57,17 @@ glm::mat4 Tank::getM()
 }
 
 
-void Tank::move(glm::mat4 P, glm::vec3 speed_vector, float wheel_speed_left, float wheel_speed_right, float angle, float pitch, float yaw, glm::vec3 &camera_transform, glm::vec3 &cameraFront, glm::vec3 &cameraPos, glm::vec3 cameraUp, ShaderProgram *sp, GLuint tex, GLuint tex2)
+void Tank::move(glm::mat4 P, Floor& ground, glm::vec3 speed_vector, float wheel_speed_left, float wheel_speed_right, float angle, float pitch, float yaw, glm::vec3 &camera_transform, glm::vec3 &cameraFront, glm::vec3 &cameraPos, glm::vec3 cameraUp, ShaderProgram *sp, GLuint tex, GLuint tex2)
 {
 	sp->use();
 	glm::mat4 M = glm::mat4(1.0f);
 
 	M = glm::translate(M, speed_vector);
-	float height = heightMap[(int)floor((speed_vector.x + 25 * 50) / 50)][(int)floor((speed_vector.z + 25 * 50) / 50)];
-	printf("%d, %d", (int)floor((speed_vector.x +25*50)/50), (int)floor((speed_vector.z + 25 * 50) / 50));
-	M = glm::translate(M, glm::vec3(0.0f,0.4f+height,0.0f));
+
+	float height = ground.calculateHeight(speed_vector.x, speed_vector.z);
+
+		
+	M = glm::translate(M, glm::vec3(0.0f,0.4f+ height,0.0f));
 	M = glm::rotate(M, glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
 	tank_position = M * Position;
 	cameraPos = camera_transform + glm::vec3(tank_position[0], tank_position[1], tank_position[2]);

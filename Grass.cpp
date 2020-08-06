@@ -2,7 +2,6 @@
 
 Grass::Grass()
 {
-	setPositions();
 }
 
 void Grass::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::vec4 tankPosition, Frustrum& frustrum, GLuint tex, GLuint tex2)
@@ -49,7 +48,7 @@ void Grass::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::vec4 tankPosi
 
 }
 
-void Grass::setPositions()
+void Grass::setPositions(Floor& ground)
 {
 	glm::vec3 position;
 	float r, r2;
@@ -61,6 +60,8 @@ void Grass::setPositions()
 
 		position.x = r * sin(d* 3.141f / 180.0f);
 		position.z = r * cos(d * 3.141f / 180.0f);
+		position.y = ground.calculateHeight(position.x, position.z) + 0.9f;
+
 		this->positions.push_back(position);
 	}
 

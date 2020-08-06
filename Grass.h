@@ -12,6 +12,7 @@
 #include "include\lodepng.h"
 #include "include\shaderprogram.h"
 #include "Frustrum.h"
+#include "include/Floor.h"
 
 
 class Grass
@@ -59,6 +60,6 @@ private:
 public:
 	Grass();
 	void draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::vec4 tankPosition, Frustrum &frustrum,  GLuint tex, GLuint tex2);
-	void setPositions();
+	void setPositions(Floor& ground);
 };
 

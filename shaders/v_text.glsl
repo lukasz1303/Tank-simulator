@@ -34,14 +34,14 @@ void main(void) {
     l2 = normalize(V * lp2 - V * M * vertex);
 
     d = distance(V * M * vertex, V * lp);
-    d = 1-(d / 100.0f);
+    d = 1-(d / 50.0f);
     if (d < 0.1)
         d = 0.1;
     if (d > 0.9)
         d = 0.9;
 
-    d2 = distance(V*M*vertex, V * lp2);
-    d2 = 1-(d2 / 100.0f);
+    d2 = distance(V*M*vertex, V * vec4(lp2.x,10,lp2.zw));
+    d2 = 1;
     if (d2 < 0.1)
         d2 = 0.1;
     if (d2 > 0.9)

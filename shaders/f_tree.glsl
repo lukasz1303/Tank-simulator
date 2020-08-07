@@ -12,9 +12,8 @@ in float d2;
 in vec4 l2;
 
 in vec2 TexCoord;
-
+in float dis;
 uniform sampler2D ourTexture;
-uniform float dis;
 void main(void) {
 
     vec4 kd = texture(ourTexture, TexCoord);
@@ -32,11 +31,11 @@ void main(void) {
 
     vec4 ks = kd;
     float nld = nl2 * d2 + nl * d;
-    if (nld < 0.4) {
-        nld = 0.4;
+    if (nld < 0.3) {
+        nld = 0.3;
     }
-    if (nld > 0.9) {
-        nld = 0.9;
+    if (nld > 1) {
+        nld = 1;
     }
-    pixelColor = mix(vec4(kd.rgb * nld, kd.a),vec4(0.8,0.8,0.8,1.0), dis);
+    pixelColor = mix(vec4(kd.rgb * nld, kd.a),vec4(0.8,0.8,0.8,1.0), 1-dis);
 }

@@ -26,6 +26,7 @@ uniform vec3 cameraPos;
 in vec2 aTexCoord;
 
 out vec2 TexCoord;
+out float dis;
 
 void main(void) {
 
@@ -44,12 +45,13 @@ void main(void) {
         d = 0.9;
 
     d2 = distance(VMv, V*lp2);
-    d2 = 1 - (d2 / 100.0f);
+    d2 = 1 - (d2 / 10000.0f);
     if (d2 < 0.1)
         d2 = 0.1;
     if (d2 > 0.9)
         d2 = 0.9;
-
+    dis = distance(M * vertex, vec4(cameraPos,1));
+    dis = exp(-pow(dis * 0.009f, 4));
     gl_Position = P*V*M * vertex;
     TexCoord = aTexCoord;
 }

@@ -38,11 +38,11 @@ void main(void) {
 
     vec4 ks = kd;
     float nld = nl2 * d2 + nl * d;
-    if (nld < 0.5) {
-        nld = 0.5;
+    if (nld < 0.15) {
+        nld = 0.15;
     }
     if (nld > 0.9) {
         nld = 0.9;
     }
-	pixelColor= vec4(kd.rgb*nld, kd.a);
+	pixelColor= vec4(kd.rgb*nld, kd.a) + vec4(ks.rgb*rv, 0)*d + vec4(ks.rgb * rv2, 0)*d2;
 }

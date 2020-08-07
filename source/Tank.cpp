@@ -67,7 +67,7 @@ void Tank::move(glm::mat4 P, Floor& ground, glm::vec3 speed_vector, float wheel_
 	float height = ground.calculateHeight(speed_vector.x, speed_vector.z);
 
 		
-	M = glm::translate(M, glm::vec3(0.0f,0.4f+ height,0.0f));
+	M = glm::translate(M, glm::vec3(0.0f,0.5f+ height,0.0f));
 	M = glm::rotate(M, glm::radians(angle), glm::vec3(0.0f, 1.0f, 0.0f));
 	tank_position = M * Position;
 	cameraPos = camera_transform + glm::vec3(tank_position[0], tank_position[1], tank_position[2]);
@@ -78,6 +78,9 @@ void Tank::move(glm::mat4 P, Floor& ground, glm::vec3 speed_vector, float wheel_
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M));
 
+	glUniform4f(sp->u("lp"), -4, 3.5 + ground.calculateHeight(-4, -4), -4, 1);
+	glUniform4f(sp->u("lp2"), -1050, 1500, -700, 1);
+
 	glEnableVertexAttribArray(sp->a("vertex"));
 	glEnableVertexAttribArray(sp->a("normal"));
 
@@ -87,8 +90,13 @@ void Tank::move(glm::mat4 P, Floor& ground, glm::vec3 speed_vector, float wheel_
 	glEnableVertexAttribArray(sp->a("aTexCoord"));
 	glVertexAttribPointer(sp->a("aTexCoord"), 2, GL_FLOAT, false, 0, &uvs[0]);
 
-	glBindTexture(GL_TEXTURE_2D, tex);
 	glUniform1i(sp->u("ourTexture1"), 0);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, tex);
+	glUniform1i(sp->u("ourTexture2"), 1);
+	glActiveTexture(GL_TEXTURE1);
+	glBindTexture(GL_TEXTURE_2D, tex2);
+
 	
 	glDrawArrays(GL_TRIANGLES, 0, vertices.size());
 
@@ -100,6 +108,7 @@ void Tank::move(glm::mat4 P, Floor& ground, glm::vec3 speed_vector, float wheel_
 
 	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, &vertices2[0]);
 	glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, &normals2[0]);
+	glVertexAttribPointer(sp->a("aTexCoord"), 2, GL_FLOAT, false, 0, &uvs2[0]);
 
 	glDrawArrays(GL_TRIANGLES, 0, vertices2.size());
 
@@ -113,6 +122,7 @@ void Tank::move(glm::mat4 P, Floor& ground, glm::vec3 speed_vector, float wheel_
 
 	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, &vertices3[0]);
 	glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, &normals3[0]);
+	glVertexAttribPointer(sp->a("aTexCoord"), 2, GL_FLOAT, false, 0, &uvs3[0]);
 
 	glDrawArrays(GL_TRIANGLES, 0, vertices3.size());
 
@@ -128,9 +138,9 @@ void Tank::move(glm::mat4 P, Floor& ground, glm::vec3 speed_vector, float wheel_
 			else
 				M_wheel = glm::rotate(M_wheel, glm::radians(40 * -wheel_speed_right), glm::vec3(0.0f, 0.0f, 1.0f));
 
-			M_wheel = glm::rotate(M_wheel, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+			//M_wheel = glm::rotate(M_wheel, glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-			M_wheel = glm::scale(M_wheel, glm::vec3(0.05f, 0.05f, 0.05f));
+			M_wheel = glm::scale(M_wheel, glm::vec3(0.85f, 0.85f, 0.85f));
 
 			glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M_wheel));
 			
@@ -140,8 +150,12 @@ void Tank::move(glm::mat4 P, Floor& ground, glm::vec3 speed_vector, float wheel_
 			glEnableVertexAttribArray(sp->a("aTexCoord"));
 			glVertexAttribPointer(sp->a("aTexCoord"), 2, GL_FLOAT, false, 0, &uvs4[0]);
 
-			glBindTexture(GL_TEXTURE_2D, tex2);
 			glUniform1i(sp->u("ourTexture1"), 0);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, tex2);
+			glUniform1i(sp->u("ourTexture2"), 1);
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, tex);
 
 			glDrawArrays(GL_TRIANGLES, 0, vertices4.size());
 		}

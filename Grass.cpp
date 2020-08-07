@@ -4,11 +4,11 @@ Grass::Grass()
 {
 }
 
-void Grass::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::vec4 tankPosition, Frustrum& frustrum, GLuint tex, GLuint tex2)
+void Grass::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::vec4 tankPosition, glm::vec3 cameraPos, Frustrum& frustrum, GLuint tex, GLuint tex2)
 {
 	positionsFrustrum.clear();
 	for (int i = 0; i < positions.size(); i++) {
-		if (frustrum.pointInFrustum(positions[i])) {
+		if (frustrum.sphereInFrustum(positions[i],1.0f)) {
 			positionsFrustrum.push_back(positions[i]);
 		}
 	}
@@ -21,6 +21,7 @@ void Grass::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::vec4 tankPosi
 	glEnableVertexAttribArray(sp->a("offset"));
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
 	glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
+	glUniform3f(sp->u("cameraPos"), cameraPos.x, cameraPos.y, cameraPos.z);
 
 	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, verts);
 	glVertexAttribPointer(sp->a("aTexCoord"), 2, GL_FLOAT, false, 0, texCoords);
@@ -53,9 +54,9 @@ void Grass::setPositions(Floor& ground)
 	glm::vec3 position;
 	float r, r2;
 	position.y = 0.9f;
-	for (int i = 0; i < 2000; i++) {
-		r2 = rand() % 500;
-		r = pow(r2, 1.0f / 1.3f);
+	for (int i = 0; i < 8000; i++) {
+		r2 = rand() % 280000;
+		r = pow(r2, 0.5f);
 		float d = (rand() % 3600)/10.0f;
 
 		position.x = r * sin(d* 3.141f / 180.0f);

@@ -32,19 +32,19 @@ void Box::setCords(glm::vec3 coords)
 	coordinates = coords;
 }
 
-void Box::draw(glm::mat4 P, glm::mat4 V, ShaderProgram *sp, GLuint tex)
+void Box::draw(glm::mat4 P, glm::mat4 V, ShaderProgram *sp, Floor& ground, GLuint tex)
 {
 		glm::mat4 M_skrzynia = glm::mat4(1.0f);
 		float color[] = { 1,1,0,1 };
 		glVertexAttribPointer(sp->a("color"), 4, GL_FLOAT, false, 0, color);
 		
-
-		M_skrzynia = glm::translate(M_skrzynia, coordinates);
+		
+		M_skrzynia = glm::translate(M_skrzynia, glm::vec3(coordinates.x, ground.calculateHeight(coordinates.x,coordinates.z),coordinates.z));
 		M_skrzynia = glm::scale(M_skrzynia, glm::vec3(0.5f, 0.5f, 0.5f));
 
 		sp->use();
-		glUniform4f(sp->u("lp"), -4,3, -4, 1);
-		glUniform4f(sp->u("lp2"), -12, 3, -12, 1);
+		glUniform4f(sp->u("lp"), -4,3.5 + ground.calculateHeight(-4,-4), -4, 1);
+		glUniform4f(sp->u("lp2"), -1050, 1500, -750, 1);
 		glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M_skrzynia));
 		glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
 		glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));

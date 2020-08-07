@@ -20,6 +20,7 @@ void Floor::draw_floor(glm::mat4 P, glm::mat4 V, GLuint tex, GLuint tex1, GLuint
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M_floor));
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
 	glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
+	glUniform3f(sp->u("cameraPos"), cameraPos.x, cameraPos.y, cameraPos.z);
 	/*glUniform3f(sp->u("cameraPos"), cameraPos.x, cameraPos.y, cameraPos.z);*/
 
 	//glEnableVertexAttribArray(sp->a("c1"));  //Włącz przesyłanie danych do atrybutu normal
@@ -29,8 +30,8 @@ void Floor::draw_floor(glm::mat4 P, glm::mat4 V, GLuint tex, GLuint tex1, GLuint
 	//glEnableVertexAttribArray(sp->a("c3"));  //Włącz przesyłanie danych do atrybutu normal
 	//glVertexAttribPointer(sp->a("c3"), 4, GL_FLOAT, false, 0, myCubeC3); //Wskaż tablicę z danymi dla atrybutu normal
 
-	glUniform4f(sp->u("lp"), -4, 3, -4, 1);
-	glUniform4f(sp->u("lp2"), -1050, 4000, -1050, 1);
+	glUniform4f(sp->u("lp"), -4, 3+calculateHeight(-4,-4), -4, 1);
+	glUniform4f(sp->u("lp2"), -1050, 1500, -700, 1);
 
 	glEnableVertexAttribArray(sp->a("vertex"));
 	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, verts);
@@ -55,7 +56,7 @@ void Floor::draw_floor(glm::mat4 P, glm::mat4 V, GLuint tex, GLuint tex1, GLuint
 	
 
 
-	glDrawArrays(GL_TRIANGLES, 0,15000);
+	glDrawArrays(GL_TRIANGLES, 0,240000);
 
 	glDisableVertexAttribArray(sp->a("vertex"));
 	glDisableVertexAttribArray(sp->a("normal"));
@@ -69,61 +70,20 @@ void Floor::createHeightMapArray()
 		heightMap[i] = new float[heightsMapSize];
 }
 
-void Floor::calculateNormals()
-{
-	float heightL = 0;
-	float heightR = 0;
-	float heightD = 0;
-	float heightU = 0;
-	for (int i = 0; i < 51; i++) {
-		for (int j = 0; j < 51; j++) {
-			if (i == 0) {
-				heightR = 0;
-			}
-			else {
-				heightR = heightMap[i - 1][j];
-			}
-			if (i == 50) {
-				heightL = 0;
-			}
-			else {
-				heightL = heightMap[i + 1][j];
-			}
-			if (j == 0) {
-				heightD = 0;
-			}
-			else {
-				heightD = heightMap[i][j - 1];
-			}
-			if (j == 50) {
-				heightU = 0;
-			}
-			else {
-				heightU = heightMap[i][j + 1];
-			}
-			normals[i] = heightL - heightR;
-			normals[i+1] = 1.0f;
-			normals[i+2] = heightD - heightU;
-			normals[i+3] = 0.0f;
-		
-		}
-	}
-}
-
 float Floor::calculateHeight(float X, float Z)
 {
 	if (X < -1000.0f || X >1000.0f || Z < -1000.0f || Z > 1000.0f) {
 		return 0;
 	}
-	float fx = floor((X + 20 * 50) / 40);
-	float fz = floor((Z + 20 * 50) / 40);
-	float xh = X - (fx * 40 - 1000);
-	float zh = Z - (fz * 40 - 1000);
+	float fx = floor((X + 5 * 200) / 10);
+	float fz = floor((Z + 5 * 200) / 10);
+	float xh = X - (fx * 10 - 1000);
+	float zh = Z - (fz * 10 - 1000);
 
-	float xh1 = 40 - xh;
-	float zh1 = 40 - zh;
-	float dbl = pow(56.56854f - sqrt(xh * xh + zh * zh), 4);
-	float dtr = pow(56.56854f - sqrt(xh1 * xh1 + zh1 * zh1), 4);
+	float xh1 = 10 - xh;
+	float zh1 = 10 - zh;
+	float dbl = pow(14.14f - sqrt(xh * xh + zh * zh), 4);
+	float dtr = pow(14.14f - sqrt(xh1 * xh1 + zh1 * zh1), 4);
 
 
 
@@ -132,14 +92,14 @@ float Floor::calculateHeight(float X, float Z)
 	glm::vec3 p3 = glm::vec3(0.0f);
 
 	if (dbl > dtr) {
-		p1 = glm::vec3(fx * 40 - 1000, heightMap[(int)fx][(int)fz], fz * 40 - 1000);
-		p2 = glm::vec3((fx + 1) * 40 - 1000, heightMap[(int)fx + 1][(int)fz], fz * 40 - 1000);
-		p3 = glm::vec3(fx * 40 - 1000, heightMap[(int)fx][(int)fz + 1], (fz + 1) * 40 - 1000);
+		p1 = glm::vec3(fx * 10 - 1000, heightMap[(int)fx][(int)fz], fz * 10 - 1000);
+		p2 = glm::vec3((fx + 1) * 10 - 1000, heightMap[(int)fx + 1][(int)fz], fz * 10 - 1000);
+		p3 = glm::vec3(fx * 10 - 1000, heightMap[(int)fx][(int)fz + 1], (fz + 1) * 10 - 1000);
 	}
 	else {
-		p1 = glm::vec3((fx + 1) * 40 - 1000, heightMap[(int)fx + 1][(int)fz + 1], (fz + 1) * 40 - 1000);
-		p2 = glm::vec3((fx + 1) * 40 - 1000, heightMap[(int)fx + 1][(int)fz], fz * 40 - 1000);
-		p3 = glm::vec3(fx * 40 - 1000, heightMap[(int)fx][(int)fz + 1], (fz + 1) * 40 - 1000);
+		p1 = glm::vec3((fx + 1) * 10 - 1000, heightMap[(int)fx + 1][(int)fz + 1], (fz + 1) * 10 - 1000);
+		p2 = glm::vec3((fx + 1) * 10 - 1000, heightMap[(int)fx + 1][(int)fz], fz * 10 - 1000);
+		p3 = glm::vec3(fx * 10 - 1000, heightMap[(int)fx][(int)fz + 1], (fz + 1) * 10 - 1000);
 
 	}
 

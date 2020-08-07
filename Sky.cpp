@@ -1,6 +1,6 @@
 #include "Sky.h"
 
-void Sky::draw_sky(glm::mat4 P, glm::mat4 V, Texture skybox[], ShaderProgram* sp, glm::vec3 speed_vector)
+void Sky::draw_sky(glm::mat4 P, glm::mat4 V, Texture skybox[], ShaderProgram* sp, glm::vec3 speed_vector, glm::vec3 cameraPos)
 {
 	sp->use();
 
@@ -10,11 +10,12 @@ void Sky::draw_sky(glm::mat4 P, glm::mat4 V, Texture skybox[], ShaderProgram* sp
 	M_skyBox = glm::translate(M_skyBox, glm::vec3(0.0f,-6.0f,0.0f));
 	M_skyBox = glm::rotate(M_skyBox, glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-	M_skyBox = glm::scale(M_skyBox, glm::vec3(200.0f, 200.0f, 200.0f));
+	M_skyBox = glm::scale(M_skyBox, glm::vec3(300.0f, 300.0f, 300.0f));
 
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M_skyBox));
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
 	glUniformMatrix4fv(sp->u("P"), 1, false, glm::value_ptr(P));
+	glUniform3f(sp->u("cameraPos"), cameraPos.x, cameraPos.y, cameraPos.z);
 	glEnableVertexAttribArray(sp->a("vertex"));
 	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, vertices);
 
@@ -23,9 +24,11 @@ void Sky::draw_sky(glm::mat4 P, glm::mat4 V, Texture skybox[], ShaderProgram* sp
 	glVertexAttribPointer(sp->a("aTexCoord"), 2, GL_FLOAT, false, 0, texCoords);
 
 
-	for (int i = 0; i < 36; i += 6) {
-		glBindTexture(GL_TEXTURE_2D, skybox[i / 6].tex);
+	for (int i = 0; i < 36; i += 6){
 		glUniform1i(sp->u("ourTexture1"), 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, skybox[i / 6].tex);
+		
 		glDrawArrays(GL_TRIANGLES, i, 6);
 	}
 

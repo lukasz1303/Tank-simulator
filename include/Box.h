@@ -11,6 +11,7 @@
 #include "constants.h"
 #include "lodepng.h"
 #include "shaderprogram.h"
+#include "include/Floor.h"
 
 
 class Box
@@ -37,7 +38,7 @@ public:
 	glm::vec3 getPosition();
 	glm::vec3 getSize();
 	void setCords(glm::vec3 coords);
-	void draw(glm::mat4 P, glm::mat4 V, ShaderProgram *sp, GLuint tex);
+	void draw(glm::mat4 P, glm::mat4 V, ShaderProgram *sp,Floor &ground, GLuint tex);
 };
 
 #endif

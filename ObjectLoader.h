@@ -24,9 +24,7 @@ public:
 	
 	bool loadOBJ(const char* path, std::vector < glm::vec4 >& out_vertices, std::vector < glm::vec2 >& out_uvs, std::vector < glm::vec4 >& out_normals);
 	bool loadOBJ(const char* path, std::vector < glm::vec4 >& out_vertices, std::vector < glm::vec2 >& out_uvs, std::vector < glm::vec4 >& out_normals, int& numberOfTextures, std::vector<int>& startVertices);
-	bool loadHeights(float *heights[51], const char* path);
+	bool loadHeights(float *heights[201], const char* path);
 	bool loadVerts(float verts[], const char* path);
-	bool loadNormals(float normals[], const char* path);
-
 };
 

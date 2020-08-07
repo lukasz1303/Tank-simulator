@@ -41,11 +41,11 @@ void main(void) {
         d = 0.9;
 
     d2 = distance(V*M*vertex, V * vec4(lp2.x,10,lp2.zw));
-    d2 = 1;
+    d2 = 1-(d / 10000.0f);
     if (d2 < 0.1)
         d2 = 0.1;
-    if (d2 > 0.9)
-        d2 = 0.9;
+    if (d2 > 0.85)
+        d2 = 0.85;
 
     gl_Position=P*V*M*vertex;
     TexCoord = aTexCoord;

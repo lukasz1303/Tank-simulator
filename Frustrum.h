@@ -10,10 +10,11 @@
 class Frustrum
 {
 private:
-	float Hnear, Wnear, Hfar, Wfar;
-	glm::vec3 nc, fc, X, Y, Z;
+	float Hnear, Wnear, Hfar, Wfar,ratio,tang,nearDist,farDist;
+	glm::vec3 nc, fc, X, Y, Z, cameraPos;
 	glm::vec3 ntl, ntr, nbl, nbr, ftl, ftr, fbl, fbr;
 	Plane* planes[6];
+	float sphereFactorX, sphereFactorY;
 	enum {
 		TOP = 0, BOTTOM, LEFT,
 		RIGHT, NEARP, FARP
@@ -21,5 +22,6 @@ private:
 public:
 	void setFrustrum(glm::vec3 cameraPos, glm::vec3 cameraFront, glm::vec3 cameraUp,float ratio, float fov, float nearDist, float farDist);
 	bool pointInFrustum(glm::vec3 p);
+	bool sphereInFrustum(glm::vec3 p, float radius);
 };
 

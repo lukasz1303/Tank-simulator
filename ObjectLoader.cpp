@@ -167,7 +167,7 @@ bool ObjectLoader::loadOBJ(const char* path, std::vector < glm::vec4 >& out_vert
 	return true;
 }
 
-bool ObjectLoader::loadHeights(float *heights[51], const char* path)
+bool ObjectLoader::loadHeights(float *heights[201], const char* path)
 {
 	#pragma warning (disable : 4996)
 	FILE* file = fopen(path, "r");
@@ -175,8 +175,8 @@ bool ObjectLoader::loadHeights(float *heights[51], const char* path)
 		printf("Impossible to open the file !\n");
 		return false;
 	}
-	for (int i = 0; i < 51; i++) {
-		for (int j = 0; j < 51; j++) {
+	for (int i = 0; i < 201; i++) {
+		for (int j = 0; j < 201; j++) {
 			fscanf(file, "%f", &heights[i][j]);
 		}
 	}
@@ -195,25 +195,6 @@ bool ObjectLoader::loadVerts(float verts[], const char* path)
 	while (1) {
 		int res = fscanf(file, "%f ", &verts[n]);
 		if (res==EOF)
-			break;
-		n++;
-	}
-
-	return true;
-}
-
-bool ObjectLoader::loadNormals(float normals[], const char* path)
-{
-#pragma warning (disable : 4996)
-	FILE* file = fopen(path, "r");
-	if (file == NULL) {
-		printf("Impossible to open the file !\n");
-		return false;
-	}
-	int n = 0;
-	while (1) {
-		int res = fscanf(file, "%f ", &normals[n]);
-		if (res == EOF)
 			break;
 		n++;
 	}

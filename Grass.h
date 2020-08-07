@@ -59,7 +59,7 @@ private:
 
 public:
 	Grass();
-	void draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::vec4 tankPosition, Frustrum &frustrum,  GLuint tex, GLuint tex2);
+	void draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::vec4 tankPosition, glm::vec3 cameraPos, Frustrum &frustrum,  GLuint tex, GLuint tex2);
 	void setPositions(Floor& ground);
 };
 

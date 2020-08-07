@@ -60,6 +60,8 @@
     <None Include="shaders\f_lamp.glsl" />
     <None Include="shaders\f_particle.glsl" />
     <None Include="shaders\f_particle_text.glsl" />
+    <None Include="shaders\f_sky.glsl" />
+    <None Include="shaders\f_tank.glsl" />
     <None Include="shaders\f_text.glsl" />
     <None Include="shaders\f_tree.glsl" />
     <None Include="shaders\v_floor.glsl" />
@@ -67,6 +69,8 @@
     <None Include="shaders\v_lamp.glsl" />
     <None Include="shaders\v_particle.glsl" />
     <None Include="shaders\v_particle_text.glsl" />
+    <None Include="shaders\v_sky.glsl" />
+    <None Include="shaders\v_tank.glsl" />
     <None Include="shaders\v_text.glsl" />
     <None Include="shaders\v_tree.glsl" />
   </ItemGroup>

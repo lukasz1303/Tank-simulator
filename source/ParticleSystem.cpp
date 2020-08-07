@@ -40,7 +40,7 @@ void ParticleSystem::processSystem(int n, float timestep)
 			system[i].color.b = glm::clamp(system[i].color.b, 0.5f - system[i].ttl / 30.0f, 0.5f + system[i].ttl / 30.0f);
 			system[i].speed *= gravity;
 			
-			system[i].ttl -= timestep*2.4f;
+			system[i].ttl -= timestep*2.0f;
 
 			if (system[i].ttl > 0) {
 
@@ -53,7 +53,7 @@ void ParticleSystem::processSystem(int n, float timestep)
 
 void ParticleSystem::drawParticles(glm::mat4 P, glm::mat4 V, ShaderProgram* sp, glm::mat4 M_lufa, glm::vec3 cameraPos,float pitch, float angle, glm::vec3 speed_vector, GLuint tex)
 {
-	processSystem(70, 0.1f);
+	processSystem(70, 0.06f);
 	sp->use();
 
 	int numberOfParticles = 69; //n-1

@@ -46,7 +46,7 @@ Tank tank = Tank();
 Box box = Box();
 Tree tree = Tree();
 Tree tree2 = Tree();
-Tree* trees[100];
+Tree* trees[400];
 Lantern lantern = Lantern();
 Lantern lantern2 = Lantern();
 Texture floor_texture = Texture();
@@ -89,7 +89,7 @@ float nearDist = 1.0f;
 float farDist = 130.0f;
 float ratio = 1920.0f / 1080.0f;
 
-const float movingSpeed = 0.1f;
+float movingSpeed = 0.0f;
 const float rotateSpeed = PI / 2;
 
 bool w_press = false;
@@ -123,6 +123,8 @@ ShaderProgram* spg;
 ShaderProgram* spl;
 ShaderProgram* sptree;
 ShaderProgram* spgrass;
+ShaderProgram* spsky;
+ShaderProgram* sptank;
 
 void readAllTextures();
 void loadAllObjects();
@@ -250,16 +252,50 @@ void drawScene(GLFWwindow* window) {
 
 	glm::vec3 speed = glm::vec3(0.0f);
 	if (w_press) {
+		if (movingSpeed <= 0.3f){
+			movingSpeed += 0.005;
+			if (movingSpeed > 0.3f) {
+				movingSpeed = 0.3f;
+			}
+		}
 		speed = glm::vec3(-movingSpeed * cos(angle * PI / 180), 0.0f, movingSpeed * sin(angle * PI / 180));
 		speed_vector -= speed;
 		wheel_speed_left += movingSpeed;
 		wheel_speed_right += movingSpeed;
 	}
+	else {
+		if (movingSpeed > 0.0f) {
+			movingSpeed -= 0.005;
+			if (movingSpeed < 0.0f)
+				movingSpeed = 0.0f;
+			speed = glm::vec3(-movingSpeed * cos(angle * PI / 180), 0.0f, movingSpeed * sin(angle * PI / 180));
+			speed_vector -= speed;
+			wheel_speed_left += movingSpeed;
+			wheel_speed_right += movingSpeed;
+		}
+	}
 	if (s_press) {
-		speed = glm::vec3(movingSpeed * cos(angle * PI / 180), 0.0f, -movingSpeed * sin(angle * PI / 180));
+		if (movingSpeed > -0.3f) {
+			movingSpeed -= 0.005;
+			if (movingSpeed < -0.3f) {
+				movingSpeed = -0.3f;
+			}
+		}
+		speed = glm::vec3(-movingSpeed * cos(angle * PI / 180), 0.0f,movingSpeed * sin(angle * PI / 180));
 		speed_vector -= speed;
-		wheel_speed_left -= movingSpeed;
-		wheel_speed_right -= movingSpeed;
+		wheel_speed_left += movingSpeed;
+		wheel_speed_right += movingSpeed;
+	}
+	else {
+		if (movingSpeed < 0.0f) {
+			movingSpeed += 0.005;
+			if (movingSpeed > 0.0f)
+				movingSpeed = 0.0f;
+			speed = glm::vec3(-movingSpeed * cos(angle * PI / 180), 0.0f, movingSpeed * sin(angle * PI / 180));
+			speed_vector -= speed;
+			wheel_speed_left += movingSpeed;
+			wheel_speed_right += movingSpeed;
+		}
 	}
 	if (a_press) {
 		angle += rotateSpeed;
@@ -282,42 +318,39 @@ void drawScene(GLFWwindow* window) {
 
 	spt->use();
 
-	glUniform4f(spt->u("lp"), -4, 3.5, -4, 1);
-	glUniform4f(spt->u("lp2"), -50, 20, -50, 1);
+	glUniform4f(spt->u("lp"), -4, 3.5 + ground.calculateHeight(-4,-4), -4, 1);
+	glUniform4f(spt->u("lp2"), -1050, 1500, -700, 1);
 
-	tank.move(P,ground,speed_vector, wheel_speed_left, wheel_speed_right, angle, pitch, yaw, camera_transform, cameraFront, cameraPos, cameraUp, spt, tank_texture.tex, wheel_texture.tex);
+	tank.move(P,ground,speed_vector, wheel_speed_left, wheel_speed_right, angle, pitch, yaw, camera_transform, cameraFront, cameraPos, cameraUp, sptank, tank_texture.tex, wheel_texture.tex);
 	glm::mat4 V = glm::lookAt(cameraPos, cameraFront, cameraUp);
 	
 	frustrum.setFrustrum(cameraPos, cameraFront, cameraUp, ratio, fov, nearDist, farDist);
-	P = glm::perspective(glm::radians(fov / 2.0f), ratio, nearDist, 300.0f);
-	sky.draw_sky(P, V, skybox, spl, speed_vector);
+	P = glm::perspective(glm::radians(fov / 2.0f), ratio, nearDist, 450.0f);
+	sky.draw_sky(P, V, skybox, spsky, speed_vector, cameraPos);
 	P = glm::perspective(glm::radians(fov / 2.0f), ratio, nearDist, farDist);
-	glm::vec3 ppp = tree.getCords();
+	//glm::vec3 ppp = tree.getCords();
 	//if (pointInFrustum(ppp))
 	//	tree.draw(P, V, sptree, tree_texture.tex, tree_texture2.tex);
 	//tree2.draw(P, V, sptree, tree_texture.tex, tree_texture2.tex);
-	int count = 0;
-	for (int i = 0; i < 25; i++) {
-		if (frustrum.pointInFrustum(trees[i]->getCords())) {
+	for (int i = 0; i < 400; i++) {
+		if (frustrum.sphereInFrustum(trees[i]->center,trees[i]->radius)) {
 			trees[i]->draw(P, V, sptree, tree_texture.tex, tree_texture2.tex, cameraPos);
-			count++;
 		}
 			
 	}
-	//printf("count = %d\n", count);
-	ground.draw_floor(P, V, floor_texture.tex, floor_texture1.tex, floor_texture2.tex, spt, cameraPos);
+	ground.draw_floor(P, V, floor_texture.tex, floor_texture1.tex, floor_texture2.tex, sptree, cameraPos);
 
-	grass.draw(P, V, spgrass, tank.getPosition(),frustrum, grass_texture.tex, floor_texture.tex);
+	grass.draw(P, V, spgrass, tank.getPosition(), cameraPos, frustrum, grass_texture.tex, floor_texture.tex);
 
 	shoot_ball = bullet.shooting(shoot_ball);
 
 	lantern.draw(P, V, spt,spl, lamp_bottom_texture.tex,lamp_white_texture.tex);
-	lantern2.draw(P, V, spt,spl, lamp_bottom_texture.tex, lamp_white_texture.tex);
+	//lantern2.draw(P, V, spt,spl, lamp_bottom_texture.tex, lamp_white_texture.tex);
 
 
 	if (!bullet.hasCollision(box.getPosition(), box.getSize(), box.is_destroyed()))
 	{
-		box.draw(P, V, spt, box_texture.tex);
+		box.draw(P, V, spt, ground, box_texture.tex);
 	}
 	else if (box.is_destroyed() == false)
 	{
@@ -346,8 +379,8 @@ int main(void)
 		exit(EXIT_FAILURE);
 	}
 
-	window = glfwCreateWindow(1920, 1080, "OpenGL", NULL, NULL);
-	//window = glfwCreateWindow(1920, 1080, "OpenGL", glfwGetPrimaryMonitor(), NULL);
+	//window = glfwCreateWindow(1920, 1080, "OpenGL", NULL, NULL);
+	window = glfwCreateWindow(1920, 1080, "OpenGL", glfwGetPrimaryMonitor(), NULL);
 
 	if (!window)
 	{
@@ -357,7 +390,7 @@ int main(void)
 	}
 
 	glfwMakeContextCurrent(window);
-	glfwSwapInterval(0);
+	glfwSwapInterval(1);
 
 	if (glewInit() != GLEW_OK) 
 	{ 
@@ -410,7 +443,7 @@ void readAllTextures() {
 	bullet_texture.readTexture((char*)"textures/bullet.png");
 	printf("Loaded bullet.png\n");
 
-	wheel_texture.readTexture((char*)"textures/ttt.png");
+	wheel_texture.readTexture((char*)"textures/wheel.png");
 	printf("Loaded wheel.png\n");
 
 	tank_texture.readTexture((char*)"textures/tank.png");
@@ -470,7 +503,7 @@ void loadAllObjects() {
 	printf("Loaded lufa.obj %d\n", res);
 	tank.setObjectBarrel(vertices, uvs, normals);
 
-	res = loader.loadOBJ("objects/wheel2.obj", vertices, uvs, normals);
+	res = loader.loadOBJ("objects/wheel.obj", vertices, uvs, normals);
 	printf("Loaded wheel.obj %d\n", res);
 	tank.setObjectWheel(vertices, uvs, normals);
 
@@ -480,7 +513,8 @@ void loadAllObjects() {
 	printf("Loaded coords2.txt %d\n", res);
 	res = loader.loadVerts(ground.normals, "normals.txt");
 	printf("Loaded normals.txt %d\n", res);
-
+	res = loader.loadVerts(ground.texCoords, "tex2.txt");
+	printf("Loaded tex2.txt %d\n", res);
 	grass.setPositions(ground);
 
 	res = loader.loadOBJ("objects/tree5.obj", vertices, uvs, normals, numberOfTextures, startVertices);
@@ -495,37 +529,40 @@ void loadAllObjects() {
 	tree.setObject(vertices, uvs, normals, numberOfTextures, startVertices, texes);
 	tree2.setObject(vertices, uvs, normals, numberOfTextures, startVertices, texes);
 
-	glm::vec3 cords[25];
+	glm::vec3 cords[400];
 	int n = 0;
-	for (int i = 0; i < 5; i++) {
-		for (int j = 0; j < 5; j++) {
-			float x = (float)(rand() % 20 - 50 + i * 20);
-			float z = (float)(rand() % 20 - 50 + j * 20);
-			if (x < 10 && z <10 && z >-10 && x > -10) {
-				x = 25.0f;
-				z = 25.0f;
+	for (int i = 0; i < 20; i++) {
+		for (int j = 0; j < 20; j++) {
+			float x = (float)(rand() % 20 - 200 + i * 20);
+			float z = (float)(rand() % 20 - 200 + j * 20);
+			if (x < 10.0f && z <10.0f && z >-10.0f && x > -10.0f) {
+				x = 0.0f;
+				z = -15.0f;
 			}
 			cords[n] = glm::vec3(x, ground.calculateHeight(x,z), z);
 			n += 1;
 		}
 	}
 
-	for (int i = 0; i < 25; i++) {
+	for (int i = 0; i < 400; i++) {
 
 		trees[i] = new Tree();
 		trees[i]->setObject(vertices, uvs, normals, numberOfTextures, startVertices, texes);
 		trees[i]->setCords(cords[i]);
 		trees[i]->setScale((float)(rand() % 200 + 100) / 100.0f);
+		trees[i]->calculateCenter();
+		trees[i]->calculateRadius();
+		trees[i]->setRotation((rand() % 3600) / 10.0f);
 
 	}
 
-	tree.setCords(glm::vec3(2.0f, ground.calculateHeight(2.0f, 20.0f), -20.0f));
-	tree2.setCords(glm::vec3(-17.0f, ground.calculateHeight(17.0f, 10.0f), 10.0f));
+	tree.setCords(glm::vec3(2.0f, ground.calculateHeight(2.0f, -20.0f), -20.0f));
+	tree2.setCords(glm::vec3(-17.0f, ground.calculateHeight(-17.0f, 10.0f), 10.0f));
 
 	box.setCords(glm::vec3(4.0f, ground.calculateHeight(4.0f, 4.0f), -4.0f));
 
-	lantern.setCords(glm::vec3(-4.0f, ground.calculateHeight(4.0f, 4.0f), -4.0f));
-	lantern2.setCords(glm::vec3(-12.0f, ground.calculateHeight(12.0f, 12.0f), -12.0f));
+	lantern.setCords(glm::vec3(-4.0f, ground.calculateHeight(-4.0f, -4.0f), -4.0f));
+	lantern2.setCords(glm::vec3(-12.0f, ground.calculateHeight(-12.0f, -12.0f), -12.0f));
 
 
 }
@@ -537,4 +574,6 @@ void loadShaders() {
 	spl = new ShaderProgram("shaders/v_lamp.glsl", NULL, "shaders/f_lamp.glsl");
 	sptree = new ShaderProgram("shaders/v_tree.glsl", NULL, "shaders/f_tree.glsl");
 	spgrass = new ShaderProgram("shaders/v_grass.glsl", NULL, "shaders/f_grass.glsl");
+	spsky = new ShaderProgram("shaders/v_sky.glsl", NULL, "shaders/f_sky.glsl");
+	sptank = new ShaderProgram("shaders/v_tank.glsl", NULL, "shaders/f_tank.glsl");
 }

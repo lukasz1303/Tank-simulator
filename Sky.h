@@ -13,7 +13,7 @@
 class Sky
 {
 
-	float vertices[192] = {
+	float vertices[144] = {
 		1.0f,-1.0f,-1.0f,1.0f,
 		-1.0f, 1.0f,-1.0f,1.0f,
 		-1.0f,-1.0f,-1.0f,1.0f,
@@ -91,6 +91,6 @@ class Sky
 public:
 	Sky();
 
-	void draw_sky(glm::mat4 P, glm::mat4 V, Texture skybox[], ShaderProgram* sp, glm::vec3 speed_vector);
+	void draw_sky(glm::mat4 P, glm::mat4 V, Texture skybox[], ShaderProgram* sp, glm::vec3 speed_vector, glm::vec3 cameraPos);
 };
 

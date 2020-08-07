@@ -26,15 +26,14 @@ void Tree::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp,  GLuint tex, GLuint
 	glm::mat4 M_tree = glm::mat4(1.0f);
 	float color[] = { 1,1,0,1 };
 	glVertexAttribPointer(sp->a("color"), 4, GL_FLOAT, false, 0, color);
-	float dis = glm::distance(coordinates, cameraPos);
-	dis = exp(-pow(dis * 0.007f, 1.5));
 	M_tree = glm::translate(M_tree, glm::vec3(coordinates));
+	M_tree = glm::rotate(M_tree, rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 	M_tree = glm::scale(M_tree, glm::vec3(scale, scale, scale));
 
 
 	glUniform4f(sp->u("lp"), -4.0, 3.5, -4.0, 1.0);
-	glUniform4f(sp->u("lp2"), -50.0, 20.0, -50.0, 1.0);
-	glUniform1f(sp->u("dis"), 1.0f-glm::clamp(dis,0.0f,1.0f));
+	glUniform4f(sp->u("lp2"), -1050, 1500.0, -750.0, 1.0);
+	glUniform3f(sp->u("cameraPos"), cameraPos.x, cameraPos.y, cameraPos.z);
 
 	glUniformMatrix4fv(sp->u("M"), 1, false, glm::value_ptr(M_tree));
 	glUniformMatrix4fv(sp->u("V"), 1, false, glm::value_ptr(V));
@@ -44,6 +43,7 @@ void Tree::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp,  GLuint tex, GLuint
 	glEnableVertexAttribArray(sp->a("normal"));
 	glEnableVertexAttribArray(sp->a("aTexCoord"));
 
+
 	glVertexAttribPointer(sp->a("vertex"), 4, GL_FLOAT, false, 0, &vertices[0]);
 	glVertexAttribPointer(sp->a("normal"), 4, GL_FLOAT, false, 0, &normals[0]);
 	glVertexAttribPointer(sp->a("aTexCoord"), 2, GL_FLOAT, false, 0, &uvs[0]);
@@ -52,8 +52,9 @@ void Tree::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp,  GLuint tex, GLuint
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	for (int i = 0; i < numberOfTextures; i++) {
-		glBindTexture(GL_TEXTURE_2D, texes[i]);
 		glUniform1i(sp->u("ourTexture1"), 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texes[i]);
 		glDrawArrays(GL_TRIANGLES, startVertices[i], startVertices[i+1]-startVertices[i]);
 	}
 
@@ -65,4 +66,30 @@ void Tree::draw(glm::mat4 P, glm::mat4 V, ShaderProgram* sp,  GLuint tex, GLuint
 void Tree::setScale(float scale)
 {
 	this->scale = scale;
+}
+
+void Tree::calculateCenter()
+{
+	glm::vec4 suma = glm::vec4(0.0f);
+	for (int i = 0; i < vertices.size(); i++) {
+		suma += vertices[i];
+	}
+	center = glm::vec3( suma.x / vertices.size(), suma.y / vertices.size(), suma.z / vertices.size()) + coordinates;
+}
+
+void Tree::calculateRadius()
+{
+	radius = 0.0f;
+	float t;
+	for (int i = 0; i < vertices.size(); i++) {
+		t = glm::distance(center, glm::vec3(vertices[i].x, vertices[i].y, vertices[i].z) + coordinates);
+		if (t > radius)
+			radius = t;
+	}
+	radius = radius * scale;
+}
+
+void Tree::setRotation(float rotation)
+{
+	this->rotation = glm::radians(rotation);
 }

@@ -328,10 +328,10 @@ void drawScene(GLFWwindow* window) {
 	P = glm::perspective(glm::radians(fov / 2.0f), ratio, nearDist, 450.0f);
 	sky.draw_sky(P, V, skybox, spsky, speed_vector, cameraPos);
 	P = glm::perspective(glm::radians(fov / 2.0f), ratio, nearDist, farDist);
-	//glm::vec3 ppp = tree.getCords();
-	//if (pointInFrustum(ppp))
-	//	tree.draw(P, V, sptree, tree_texture.tex, tree_texture2.tex);
-	//tree2.draw(P, V, sptree, tree_texture.tex, tree_texture2.tex);
+	////glm::vec3 ppp = tree.getCords();
+	////if (pointInFrustum(ppp))
+	////	tree.draw(P, V, sptree, tree_texture.tex, tree_texture2.tex);
+	////tree2.draw(P, V, sptree, tree_texture.tex, tree_texture2.tex);
 	for (int i = 0; i < 400; i++) {
 		if (frustrum.sphereInFrustum(trees[i]->center,trees[i]->radius)) {
 			trees[i]->draw(P, V, sptree, tree_texture.tex, tree_texture2.tex, cameraPos);
@@ -379,8 +379,8 @@ int main(void)
 		exit(EXIT_FAILURE);
 	}
 
-	//window = glfwCreateWindow(1920, 1080, "OpenGL", NULL, NULL);
-	window = glfwCreateWindow(1920, 1080, "OpenGL", glfwGetPrimaryMonitor(), NULL);
+	window = glfwCreateWindow(1920, 1080, "OpenGL", NULL, NULL);
+	//window = glfwCreateWindow(1920, 1080, "OpenGL", glfwGetPrimaryMonitor(), NULL);
 
 	if (!window)
 	{
@@ -390,7 +390,7 @@ int main(void)
 	}
 
 	glfwMakeContextCurrent(window);
-	glfwSwapInterval(1);
+	glfwSwapInterval(0);
 
 	if (glewInit() != GLEW_OK) 
 	{ 
@@ -543,9 +543,7 @@ void loadAllObjects() {
 			n += 1;
 		}
 	}
-
 	for (int i = 0; i < 400; i++) {
-
 		trees[i] = new Tree();
 		trees[i]->setObject(vertices, uvs, normals, numberOfTextures, startVertices, texes);
 		trees[i]->setCords(cords[i]);
@@ -553,7 +551,6 @@ void loadAllObjects() {
 		trees[i]->calculateCenter();
 		trees[i]->calculateRadius();
 		trees[i]->setRotation((rand() % 3600) / 10.0f);
-
 	}
 
 	tree.setCords(glm::vec3(2.0f, ground.calculateHeight(2.0f, -20.0f), -20.0f));

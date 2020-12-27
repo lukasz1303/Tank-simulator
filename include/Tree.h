@@ -12,6 +12,7 @@
 #include "include\constants.h"
 #include "include\lodepng.h"
 #include "include\shaderprogram.h"
+#include "Frustrum.h"
 
 class Tree
 {
